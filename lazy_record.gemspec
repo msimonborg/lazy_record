@@ -13,9 +13,9 @@ Gem::Specification.new do |spec|
   spec.description   = %q{Add some convenience macros for your POROs that cut down on boilerplate code. Method definition macros, more powerful attr_accessors, and easy associations between in-memory objects. Somewhat mocks the ActiveRecord API to make it feel comfortable and intuitive for Rails developers.}
   spec.homepage      = "https://www.github.com/msimonborg/lazy_record"
   spec.license       = "MIT"
-  spec.add_dependency    = "activesupport"
-  spec.add_development_dependency = 'pry'
-  spec.add_development_dependency = 'rspec'
+  spec.add_dependency             'activesupport'
+  spec.add_development_dependency 'pry'
+  spec.add_development_dependency 'rspec'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
   # to allow pushing to a single host or delete this section to allow pushing to any host.
