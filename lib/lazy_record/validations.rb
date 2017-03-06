@@ -18,7 +18,7 @@ class LazyRecord
               begin
                 raise ArgumentError if send(param.to_sym).nil?
               rescue => e
-                puts e, "#{arg} must be given", inspect
+                puts e, "#{param} must be given", inspect
                 return false
               end
             end
