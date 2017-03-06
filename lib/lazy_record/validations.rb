@@ -13,12 +13,12 @@ module LazyRecord
       if opts[:presence] == true
 
         mod.module_eval do
-          define_method(:validation) do |*args|
-            args.each do |arg|
+          define_method(:validation) do |*params|
+            params.each do |param|
               begin
-                raise ArgumentError if send(arg.to_sym).nil?
+                raise ArgumentError if send(param.to_sym).nil?
               rescue => e
-                puts e, "#{arg} must be given", self.inspect
+                puts e, "#{arg} must be given", inspect
                 return false
               end
             end
