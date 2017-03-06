@@ -7,12 +7,6 @@ module LazyRecord
   # #initialize just call super.
   module Attributes
     ATTR_MODULE_NAME = :DynamicAttributes
-    
-    def self.included(klass)
-      klass.class_eval do
-        include DynamicModules
-      end
-    end
 
     def my_attr_accessor(*names)
       mod = get_or_set_and_include_mod(ATTR_MODULE_NAME)
