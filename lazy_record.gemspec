@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.authors       = ['M. Simon Borg']
   spec.email         = ['msimonborg@gmail.com']
 
-  spec.summary       = 'Some ActiveRecord magic for your table-less POROs.'
+  spec.summary       = 'Some ActiveRecord magic for your table-less POROs. WIP.'
   spec.description   = 'Add some convenience macros for your POROs that cut down on boilerplate code. Method definition macros, more powerful attr_accessors, and easy associations between in-memory objects. Somewhat mocks the ActiveRecord API to make it feel comfortable and intuitive for Rails developers.'
   spec.homepage      = 'https://www.github.com/msimonborg/lazy_record'
   spec.license       = 'MIT'

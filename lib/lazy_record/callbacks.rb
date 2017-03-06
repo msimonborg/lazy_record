@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module LazyRecord
+class LazyRecord
   # After #initialize callbacks for validations and setting object id.
   module Callbacks
     def inherited(klass)

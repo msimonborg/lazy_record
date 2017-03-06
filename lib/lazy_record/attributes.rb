@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module LazyRecord
+class LazyRecord
   # Add special attr_accessors that automatically add initialization options
   # to your initialize method. Using lr_attr_accessor, you automatically get
   # an #initialize method that takes setter options for each attribute and
@@ -32,6 +32,7 @@ module LazyRecord
           end
 
           yield self if block_given?
+          self
         end
 
         def instance_attrs_to_s

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-module LazyRecord
+class LazyRecord
   # Macro for dynamic instance method generation. Best to use for one-liners.
   module Methods
     METHODS_MODULE_NAME = :DynamicMethods
