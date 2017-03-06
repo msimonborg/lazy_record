@@ -4,7 +4,7 @@ class LazyRecord
   module Scopes
     SCOPE_MODULE_NAME = :ScopeMethods
 
-    def my_scope(method_name, lambda)
+    def lr_scope(method_name, lambda)
       if const_defined?(SCOPE_MODULE_NAME, _search_ancestors = false)
         mod = const_get(SCOPE_MODULE_NAME)
       else

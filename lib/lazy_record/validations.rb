@@ -5,7 +5,7 @@ class LazyRecord
   module Validations
     VALIDATIONS_MODULE_NAME = :ModelValidations
 
-    def my_validates(*args)
+    def lr_validates(*args)
       mod = get_or_set_and_include_mod(VALIDATIONS_MODULE_NAME)
 
       opts = args.extract_options!

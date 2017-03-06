@@ -5,7 +5,7 @@ class LazyRecord
     COLLECTION_MODULE_NAME   = :Collections
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
-    def my_has_many(*collections)
+    def lr_has_many(*collections)
       mod = get_or_set_and_include_mod(COLLECTION_MODULE_NAME)
 
       mod.module_eval do
@@ -29,7 +29,7 @@ class LazyRecord
       end
     end
 
-    def my_accepts_nested_attributes_for(*collections)
+    def lr_accepts_nested_attributes_for(*collections)
       mod = get_or_set_and_include_mod(NESTED_ATTRS_MODULE_NAME)
 
       mod.module_eval do

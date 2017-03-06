@@ -14,7 +14,7 @@ class LazyRecord
       end
     end
 
-    def my_method(method_name, *args, method)
+    def lr_method(method_name, *args, method)
       mod = get_or_set_and_include_mod(METHODS_MODULE_NAME)
 
       args = args.map(&:to_s).join(', ')

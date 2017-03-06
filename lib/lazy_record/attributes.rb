@@ -8,7 +8,7 @@ class LazyRecord
   module Attributes
     ATTR_MODULE_NAME = :DynamicAttributes
 
-    def my_attr_accessor(*names)
+    def lr_attr_accessor(*names)
       mod = get_or_set_and_include_mod(ATTR_MODULE_NAME)
 
       mod.module_eval do
