@@ -37,7 +37,7 @@ module LazyRecord
       @all.where(condition)
     end
 
-    def initialize
+    def initialize(_opts = {})
       yield self if block_given?
     end
 
@@ -56,7 +56,8 @@ module LazyRecord
     private :id=
 
     def inspect
-      "#<#{self.class} id: #{id ? id : 'nil'}, #{instance_attrs_to_s.join(', ')}>"
+      "#<#{self.class} id: #{id ? id : 'nil'}"\
+      "#{instance_attrs_to_s.unshift('').join(', ')}>"
     end
   end
 end

@@ -27,25 +27,140 @@ class Thing < LazyRecord::Base
 end
 
 thing = Thing.new do |t|
-  # do stuff
+  t.inspect
 end
+# => #<Thing id: 1>
 ```
+Every LazyRecord object is assigned an auto-incrementing ID after initialization. IDs reset when the program is terminated.
 
-Here are some of the class method macros you get when your class inherits from
+Use `lr_attr_accessor` like you would use `attr_accessor`. You'll get hash syntax in your `#intialize` method for attribute setting.
 
 ```ruby
-lr_attr_accessor
+class Thing < LazyRecord::Base
+  lr_attr_accessor :stuff, :junk
+end
+
+thing = Thing.new stuff: 'stuff' do |t|
+  t.junk = 'junk'
+end
+# => #<Thing id: 1, stuff: "stuff", junk: "junk">
+```
+
+Validate presence of attributes with `lr_validates` like you would with ActiveRecord. Failed validations will return false and the ID will not be incremented. More validation options coming in the future.
+
+```ruby
+class Thing < LazyRecord::Base
+  lr_attr_accessor :stuff, :junk
+  lr_validates :stuff, presence: true
+end
+
+thing = Thing.new junk: 'junk'
+ArgumentError
+stuff must be given
+#<Thing id: nil, stuff: nil, junk: "junk">
+# => false
+```
+Use `lr_has_many` to set up associated collections of another class. `lr_belongs_to` will be added in a future update.
+
+```ruby
+class Whatever < LazyRecord::Base
+end
+
+class Thing < LazyRecord::Base
+  lr_attr_accessor :stuff, :junk
+  lr_validates :stuff, presence: true
+  lr_has_many :whatevers
+end
+
+whatever = Whatever.new
+# => #<Whatever id: 1>
+
+thing = Thing.new do |t|
+  t.stuff = 'stuff'
+  t.whatevers << whatever
+end
+# => #<Thing id: 1, stuff: "stuff", junk: nil>
+
+thing.whatevers
+# => #<WhateverRelation [#<Whatever id: 1>]>
+```
+
+Use `lr_scope` and `#where` to create class scope methods and query objects. Works just like ActiveRecord scopes, including scope chaining. Only since it is all Ruby and no SQL, use `==` as the comparison operator.
+
+```ruby
+class Whatever < LazyRecord::Base
+  lr_attr_accessor :party_value, :sleepy_value
+  lr_scope :big_party, -> { where('party_value > 10') }
+  lr_scope :low_sleepy, -> { where('sleepy_value < 10') }
+end
+
+class Thing < LazyRecord::Base
+  lr_attr_accessor :stuff, :junk
+  lr_validates :stuff, presence: true
+  lr_has_many :whatevers
+end
+
+Whatever.new party_value: 12, sleepy_value: 12
+Whatever.new party_value: 13, sleepy_value: 3
+Whatever.new party_value: 4, sleepy_value: 11
+Whatever.new party_value: 3, sleepy_value: 5
+thing = Thing.new do |t|
+  t.stuff = 'stuff'
+  t.whatevers = Whatever.all
+end
+# => #<Thing id: 1, stuff: "stuff", junk: nil>
+
+thing.whatevers.big_party
+# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>, #<Whatever id: 2, party_value: 13, sleepy_value: 3>]>
+
+thing.whatevers.low_sleepy
+# => #<WhateverRelation [#<Whatever id: 2, party_value: 13, sleepy_value: 3>, #<Whatever id: 4, party_value: 3, sleepy_value: 5>]>
+
+thing.whatevers.big_party.low_sleepy
+# => #<WhateverRelation [#<Whatever id: 2, party_value: 13, sleepy_value: 3>]>
+
+Whatever.low_sleepy
+# => #<WhateverRelation [#<Whatever id: 2, party_value: 13, sleepy_value: 3>, #<Whatever id: 4, party_value: 3, sleepy_value: 5>]>
+```
+
+Use `lr_method` for an alternative API for defining short instance methods. Can use lambda syntax or string syntax. Only good for quick one-liners. If the method references `self` of the instance, either explicitly or implicitly, it needs to use the string syntax, since any variables not passed into the lambda will be evaluated in the context of the Class level scope.
+
+```ruby
+class Whatever < LazyRecord::Base
+  lr_attr_accessor :party_value, :sleepy_value, :right
+  lr_scope :big_party, -> { where('party_value > 10') }
+  lr_scope :low_sleepy, -> { where('sleepy_value < 10') }
+end
+
+class Thing < LazyRecord::Base
+  lr_attr_accessor :stuff, :junk
+  lr_validates :stuff, presence: true
+  lr_has_many :whatevers
+  lr_method :speak, -> (string) { puts string }
+  lr_method :add_whatever, 'hmm', 'whatevers << Whatever.new(right: hmm)'
+end
+
+thing = Thing.new stuff: 'stuff'
+thing.speak "I'm a thing"
+# I'm a thing
+# => nil
+
+thing.add_whatever(true)
+# => [#<Whatever id: 1, party_value: nil, sleepy_value: nil, right: true>]
+
+thing.whatevers
+# => #<WhateverRelation [#<Whatever id: 1, party_value: nil, sleepy_value: nil, right: true>]>
 ```
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment. There is an `example` directory with some LazyRecord classes defined.
 
 To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/lazy_record.
+Bug reports and pull requests are welcome on GitHub at https://github.com/msimonborg/lazy_record.
 
 
 ## License
