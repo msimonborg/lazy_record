@@ -121,6 +121,9 @@ thing.whatevers.big_party.low_sleepy
 
 Whatever.low_sleepy
 # => #<WhateverRelation [#<Whatever id: 2, party_value: 13, sleepy_value: 3>, #<Whatever id: 4, party_value: 3, sleepy_value: 5>]>
+
+Whatever.where('id == 1')
+# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>
 ```
 
 Use `lr_method` for an alternative API for defining short instance methods. Can use lambda syntax or string syntax. Only good for quick one-liners. If the method references `self` of the instance, either explicitly or implicitly, it needs to use the string syntax, since any variables not passed into the lambda will be evaluated in the context of the Class level scope.
