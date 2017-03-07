@@ -140,7 +140,7 @@ class Thing < LazyRecord::Base
   lr_validates :stuff, presence: true
   lr_has_many :whatevers
   lr_method :speak, -> (string) { puts string }
-  lr_method :add_whatever, 'hmm', 'whatevers << Whatever.new(right: hmm)'
+  lr_method :add_whatever, 'right', 'whatevers << Whatever.new(right: right)'
 end
 
 thing = Thing.new stuff: 'stuff'
