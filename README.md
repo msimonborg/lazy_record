@@ -1,8 +1,6 @@
 # LazyRecord
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/lazy_record`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+LazyRecord writes a bunch of boilerplate code for your POROs, similarly to what you'd expect ActiveRecord to do for your database-backed objects. This project is an attempt to understand and explore dynamic programming techniques in Ruby, and demystify some of the Rails magic. Maybe someone will find it useful.
 
 ## Installation
 
@@ -22,7 +20,22 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+All objects that inherit from `LazyRecord::Base` get block syntax added to their `#initialize` method.
+
+```ruby
+class Thing < LazyRecord::Base
+end
+
+thing = Thing.new do |t|
+  # do stuff
+end
+```
+
+Here are some of the class method macros you get when your class inherits from
+
+```ruby
+lr_attr_accessor
+```
 
 ## Development
 
@@ -38,4 +51,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/[USERN
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
