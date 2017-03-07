@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require 'active_support'
+require 'active_support/inflector'
 require 'lazy_record/version'
 require 'lazy_record/associations'
 require 'lazy_record/attributes'
