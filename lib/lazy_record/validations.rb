@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class LazyRecord
+module LazyRecord
   # Validations callbacks. If validations don't pass then initialization
   # will return false.
   module Validations

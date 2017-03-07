@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class LazyRecord
+module LazyRecord
   # Inherit from LazyRecord::Base to achieve lazier development.
   #
   # LazyRecord gives you some ActiveRecord-style conveniences for your in-memory

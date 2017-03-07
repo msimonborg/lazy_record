@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class LazyRecord
+module LazyRecord
   # Set up in-memory associations between POROs.
   module Associations
     COLLECTION_MODULE_NAME   = :Collections

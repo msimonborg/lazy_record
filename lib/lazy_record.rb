@@ -13,4 +13,4 @@ require 'lazy_record/relation'
 require 'lazy_record/base'
 
 # Namespace
-class LazyRecord; end
+module LazyRecord; end
