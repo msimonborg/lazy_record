@@ -1,30 +1,45 @@
 # frozen_string_literal: true
 module LazyRecord
-  class Relation < Array
-    attr_reader :model
+  class Relation
+    include Enumerable
+
+    attr_reader :model, :all
 
     def initialize(model:, array: nil)
       raise ArgumentError, "model must be a class" unless model.is_a?(Class)
       @model = model
+      @all   = []
       self_extend_scopes_module
-      array.each { |object| self << object } if array
+      array.each { |object| @all << object } if array
     end
 
     def <<(other)
       unless other.is_a?(model)
         raise ArgumentError, "object must be of type #{model}"
       else
-        super
+        all << other
       end
     end
 
     def inspect
-      "\#<#{model}Relation [#{self.map(&:inspect).join(', ')}]>"
+      "\#<#{model}Relation [#{all.map(&:inspect).join(', ')}]>"
     end
 
     def where(condition)
-      result = select { |x| eval "x.#{condition}" }
+      result = all.select { |x| eval "x.#{condition}" }
       self.class.new(model: model, array: result)
+    end
+
+    def each(&block)
+      all.each(&block)
+    end
+
+    def [](index)
+      all[index]
+    end
+
+    def last
+      self[-1]
     end
 
     def self_extend_scopes_module
