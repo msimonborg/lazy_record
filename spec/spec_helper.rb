@@ -105,16 +105,15 @@ end
 
 module IncludeAndInherit
   def it_can_include_and_inherit(*klasses, &block)
-    it_includes_in_and_inherits_from_a_custom_base(*klasses, &block)
+    it_includes_lazy_record_base_module(*klasses, &block)
     it_inherits_directly_from_lazy_record_base(*klasses, &block)
   end
 
-  def it_includes_in_and_inherits_from_a_custom_base(*klasses, &block)
+  def it_includes_lazy_record_base_module(*klasses, &block)
     context "included in custom Base class" do
-      eval("CustomBase = Class.new")
-      CustomBase.include(LazyRecord::BaseModule)
       klasses.each do |klass|
-        eval("::#{klass} = Class.new(CustomBase)")
+        eval("::#{klass} = Class.new")
+        eval("::#{klass}.include(LazyRecord::BaseModule)")
       end
       module_eval(&block)
     end
