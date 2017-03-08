@@ -9,7 +9,7 @@ module LazyRecord
     extend DynamicModules
 
     def self.define_new_method
-      Proc.new do
+      proc do
         define_method(:new) do |opts = {}, &block|
           @all ||= Relation.new(model: self)
           instance = super(opts, &block)
@@ -22,7 +22,7 @@ module LazyRecord
     end
 
     def self.define_add_id_method
-      Proc.new do
+      proc do
         define_method(:add_id) do |instance|
           if instance
             all << instance

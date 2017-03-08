@@ -6,18 +6,18 @@ module LazyRecord
     attr_reader :model, :all
 
     def initialize(model:, array: nil)
-      raise ArgumentError, "model must be a class" unless model.is_a?(Class)
+      raise ArgumentError, 'model must be a class' unless model.is_a?(Class)
       @model = model
       @all   = []
       self_extend_scopes_module
-      array.each { |object| @all << object } if array
+      array&.each { |object| @all << object }
     end
 
     def <<(other)
-      unless other.is_a?(model)
-        raise ArgumentError, "object must be of type #{model}"
-      else
+      if other.is_a?(model)
         all << other
+      else
+        raise ArgumentError, "object must be of type #{model}"
       end
     end
 

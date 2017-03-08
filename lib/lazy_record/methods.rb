@@ -17,7 +17,7 @@ module LazyRecord
     def lr_method(method_name, *method_args, method)
       mod         = get_or_set_and_include_mod(METHODS_MODULE_NAME)
       method_args = method_args.map(&:to_s).join(', ')
-      
+
       if method.respond_to?(:call)
         make_method_from_proc(mod, method_name, method)
       else
