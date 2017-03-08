@@ -13,5 +13,13 @@ module LazyRecord
         mod # return the Module for variable assignment.
       end
     end
+
+    def get_or_set_mod(module_name)
+      if const_defined?(module_name, _search_ancestors = false)
+        const_get(module_name)
+      else
+        mod = const_set(module_name, Module.new)
+      end
+    end
   end
 end
