@@ -31,6 +31,17 @@ thing = Thing.new do |t|
 end
 # => #<Thing id: 1>
 ```
+
+Alternatively, if you are already inheriting from another class, you can mix in the `LazyRecord::BaseModule` and the results will be the same.
+
+```ruby
+class Thing
+  include LazyRecord::BaseModule
+end
+
+thing = Thing.new { |t| t.inspect }
+# => #<Thing id: 1>
+```
 Every LazyRecord object is assigned an auto-incrementing ID after initialization. IDs reset when the program is terminated.
 
 Use `lr_attr_accessor` like you would use `attr_accessor`. You'll get hash syntax in your `#intialize` method for attribute setting.
