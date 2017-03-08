@@ -37,6 +37,10 @@ module LazyRecord
       @all.where(condition)
     end
 
+    def self.destroy_all
+      @all.send(:clear)
+    end
+
     def initialize(_opts = {})
       yield self if block_given?
     end

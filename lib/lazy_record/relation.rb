@@ -42,6 +42,12 @@ module LazyRecord
       self[-1]
     end
 
+    def clear
+      all.clear
+    end
+
+    private :clear, :all
+
     def self_extend_scopes_module
       if model.const_defined?(:ScopeMethods, _search_ancestors = false)
         mod = eval("#{model}::ScopeMethods")

@@ -22,7 +22,8 @@ module LazyRecord
             if coll.is_a? Relation
               instance_variable_set('@' + collection.to_s, coll)
             else
-              raise ArgumentError, "Argument must be a collection of #{collection}"
+              raise ArgumentError, "Argument must be a collection of "\
+              "#{collection}"
             end
           end
         end

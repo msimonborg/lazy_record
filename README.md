@@ -126,7 +126,7 @@ Whatever.where('id == 1')
 # => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>
 ```
 
-Use `lr_method` for an alternative API for defining short instance methods. Can use lambda syntax or string syntax. Only good for quick one-liners. If the method references `self` of the instance, either explicitly or implicitly, it needs to use the string syntax, since any variables not passed into the lambda will be evaluated in the context of the Class level scope.
+Use `lr_method` for an alternative API for defining short instance methods. Can use lambda syntax or string syntax. Best for quick one-liners. If the method references `self` of the instance, either explicitly or implicitly, it needs to use the string syntax, since anything passed into the lambda will be evaluated in the context of the Class level scope.
 
 ```ruby
 class Whatever < LazyRecord::Base
