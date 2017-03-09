@@ -5,7 +5,7 @@ module LazyRecord
     METHODS_MODULE_NAME = :DynamicMethods
 
     def can_multiply
-      mod = get_or_set_and_include_mod(METHODS_MODULE_NAME)
+      include mod = get_or_set_mod(METHODS_MODULE_NAME)
 
       mod.module_eval do
         define_method(:multiply) do |num1, num2|
@@ -15,7 +15,7 @@ module LazyRecord
     end
 
     def lr_method(method_name, *method_args, method)
-      mod         = get_or_set_and_include_mod(METHODS_MODULE_NAME)
+      include mod = get_or_set_mod(METHODS_MODULE_NAME)
       method_args = method_args.map(&:to_s).join(', ')
 
       if method.respond_to?(:call)
