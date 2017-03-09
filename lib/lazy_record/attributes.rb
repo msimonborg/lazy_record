@@ -9,7 +9,7 @@ module LazyRecord
     ATTR_MODULE_NAME = :DynamicAttributes
 
     def define_setters_and_getters
-      proc do |name|
+      lambda do |name|
         define_method(name) do
           instance_variable_get('@' + name.to_s)
         end
@@ -21,9 +21,8 @@ module LazyRecord
     end
 
     def define_initialize
-      proc do
+      lambda do
         define_method(:initialize) do |opts = {}, &block|
-          binding.pry
           instance_attr_accessors.each do |attr|
             send("#{attr}=", opts[attr.to_sym])
           end
@@ -35,7 +34,7 @@ module LazyRecord
     end
 
     def define_instance_attrs_to_s
-      proc do
+      lambda do
         define_method(:instance_attrs_to_s) do
           instance_attr_accessors.map do |attr|
             value = send(attr)
@@ -54,7 +53,7 @@ module LazyRecord
     end
 
     def define_instance_attr_accessors
-      proc do |*names|
+      lambda do |*names|
         define_method(:instance_attr_accessors) do
           names.map(&:to_sym)
         end
@@ -64,19 +63,13 @@ module LazyRecord
 
 
     def lr_attr_accessor(*names)
-      mod                     = get_or_set_and_include_mod(ATTR_MODULE_NAME)
-      setters_and_getters     = define_setters_and_getters
-      init                    = define_initialize
-      instance_attrs_to_s     = define_instance_attrs_to_s
-      instance_attr_accessors = define_instance_attr_accessors
-
+      include mod = get_or_set_mod(ATTR_MODULE_NAME)
+      mod.extend(Attributes)
       mod.module_eval do
-        names.each do |name|
-          setters_and_getters.call(name)
-        end
-        instance_attr_accessors.call(*names)
-        init.call
-        instance_attrs_to_s.call
+        names.each { |name| define_setters_and_getters.call(name) }
+        define_instance_attr_accessors.call(*names)
+        define_initialize.call
+        define_instance_attrs_to_s.call
       end
     end
   end
