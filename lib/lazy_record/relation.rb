@@ -10,7 +10,10 @@ module LazyRecord
       @model = model
       @all   = []
       self_extend_scopes_module
-      array&.each { |object| @all << object }
+      array&.each do |object|
+        @all << object && next if object.is_a?(model)
+        raise ArgumentError, "Argument must be a collection of #{model.to_s.tableize}"
+      end
     end
 
     def <<(other)
