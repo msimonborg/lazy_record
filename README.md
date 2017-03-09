@@ -26,20 +26,20 @@ All objects that inherit from `LazyRecord::Base` get block syntax added to their
 class Thing < LazyRecord::Base
 end
 
-thing = Thing.new do |t|
-  t.inspect
-end
+thing = Thing.new { |t| puts t.class.superclass }
+# LazyRecord::Base
 # => #<Thing id: 1>
 ```
 
-Alternatively, if you are already inheriting from another class, you can mix in the `LazyRecord::BaseModule` and the results will be the same.
+Alternatively, if you want to inherit from another class, you can mix in the `LazyRecord::BaseModule` and get all the same results.
 
 ```ruby
 class Thing
   include LazyRecord::BaseModule
 end
 
-thing = Thing.new { |t| t.inspect }
+thing = Thing.new { |t| puts t.class.superclass }
+# Object
 # => #<Thing id: 1>
 ```
 Every LazyRecord object is assigned an auto-incrementing ID after initialization. IDs reset when the program is terminated.
