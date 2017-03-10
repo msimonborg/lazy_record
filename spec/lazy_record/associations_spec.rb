@@ -12,16 +12,8 @@ describe 'Associations' do
       expect(Parent.new.children.inspect).to include('ChildRelation')
     end
 
-    it 'Child instances can be added to a ChildRelation' do
-      p1 = Parent.new do |p1|
-        10.times { p1.children << Child.new }
-      end
-
-      expect(p1.children.count).to eq(10)
-    end
-
-    it 'raises an error when a non-Child is added to the relation' do
-      expect { Parent.new { |p1| p1.children << Object.new } }.to raise_error(ArgumentError)
+    it 'the Relation is bound to the Child class' do
+      expect(Parent.new.children.model).to eq(Child)
     end
 
     it 'can set #children as a collection of children' do
@@ -36,23 +28,12 @@ describe 'Associations' do
     end
 
     it 'cannot set #children as anything else but a collection of children' do
-      not_children = []
-      10.times { not_children << Object.new }
-
-      expect { Parent.new { |p| p.children = not_children } }.to raise_error(ArgumentError, 'Argument must be a collection of children')
-      expect { Parent.new { |p| p.children = Object.new } }.to raise_error(ArgumentError, 'Argument must be a collection of children')
-    end
-
-    it 'can destroy all of its children' do
-      p1 = Parent.new do |p1|
-        10.times { p1.children << Child.new }
-      end
-      Child.new
-      p1.children.destroy_all
-
-      expect(p1.children.count).to eq(0)
-      expect(Child.count).to eq(1)
-      expect(Child.last.id).to eq(11)
+      non_children = []
+      10.times { non_children << Object.new }
+      add_non_children = lambda { Parent.new { |p| p.children = non_children } }
+      add_non_child = lambda { Parent.new { |p| p.children = Object.new } }
+      expect(&add_non_children).to raise_error(ArgumentError, 'Argument must be a collection of children')
+      expect(&add_non_child).to raise_error(ArgumentError, 'Argument must be a collection of children')
     end
   end
 end
