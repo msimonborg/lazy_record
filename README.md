@@ -1,4 +1,5 @@
 # LazyRecord
+[![Code Climate](https://codeclimate.com/github/msimonborg/lazy_record/badges/gpa.svg)](https://codeclimate.com/github/msimonborg/lazy_record)
 
 LazyRecord writes a bunch of boilerplate code for your POROs, similarly to what you'd expect ActiveRecord to do for your database-backed objects. This project is an attempt to understand and explore dynamic programming techniques in Ruby, and demystify some of the Rails magic. Maybe someone will find it useful.
 
