@@ -8,10 +8,8 @@ module LazyRecord
     def define_validation
       define_method(:validation) do |*params|
         params.each do |param|
-          begin
-            raise ArgumentError if send(param.to_sym).nil?
-          rescue => e
-            puts e, "#{param} must be given", inspect
+          if send(param.to_sym).nil?
+            puts "#{param} must be given", inspect
             return false
           end
         end
