@@ -33,18 +33,25 @@ module LazyRecord
       define_method(:instance_attrs_to_s) do
         instance_attr_accessors.map do |attr|
           value = send(attr)
-          attr_to_s = if value.is_a?(String)
-                        "\"#{value}\""
-                      elsif value.nil?
-                        'nil'
-                      else
-                        value
-                      end
+          attr_to_s = stringify_value(value)
           "#{attr.to_s.delete(':')}: #{attr_to_s}"
         end
       end
       private :instance_attrs_to_s
     end
+
+    def define_stringify_value
+      define_method(:stringify_value) do |value|
+        if value.is_a?(String)
+          "\"#{value}\""
+        elsif value.nil?
+          'nil'
+        else
+          value
+        end
+      end
+    end
+
 
     def define_instance_attr_accessors(*names)
       define_method(:instance_attr_accessors) do
@@ -62,6 +69,7 @@ module LazyRecord
         define_instance_attr_accessors(*names)
         define_initialize
         define_instance_attrs_to_s
+        define_stringify_value
       end
     end
   end

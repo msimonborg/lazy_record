@@ -13,9 +13,7 @@ module LazyRecord
 
     def define_collection_setter(collection, class_name)
       define_method("#{collection}=") do |coll|
-        if coll.is_a? Array
-          coll = Relation.new(model: class_name, array: coll)
-        end
+        coll = Relation.new(model: class_name, array: coll) if coll.is_a?(Array)
         if coll.is_a? Relation
           instance_variable_set('@' + collection.to_s, coll)
         else
