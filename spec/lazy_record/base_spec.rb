@@ -20,6 +20,14 @@ describe 'Base' do
       expect(b2.id - b1.id).to eq(1)
     end
 
+    it 'has a private method #id=' do
+      b1 = BaseSpec.new
+      b1_id = b1.id
+      b1.send(:id=, b1_id + 1)
+      expect(b1.id - b1_id).to eq(1)
+      expect(b1).not_to respond_to(:id=)
+    end
+
     it 'responds to .all and returns a Relation of all instances' do
       b1 = BaseSpec.new
       b2 = BaseSpec.new
