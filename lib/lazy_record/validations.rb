@@ -5,25 +5,28 @@ module LazyRecord
   module Validations
     VALIDATIONS_MODULE_NAME = :ModelValidations
 
+    def define_validation
+      define_method(:validation) do |*params|
+        params.each do |param|
+          begin
+            raise ArgumentError if send(param.to_sym).nil?
+          rescue => e
+            puts e, "#{param} must be given", inspect
+            return false
+          end
+        end
+        self
+      end
+    end
+
     def lr_validates(*args)
       include mod = get_or_set_mod(VALIDATIONS_MODULE_NAME)
-
+      mod.extend(Validations)
       opts = args.extract_options!
       @validations = args
       if opts[:presence] == true
-
         mod.module_eval do
-          define_method(:validation) do |*params|
-            params.each do |param|
-              begin
-                raise ArgumentError if send(param.to_sym).nil?
-              rescue => e
-                puts e, "#{param} must be given", inspect
-                return false
-              end
-            end
-            self
-          end
+          define_validation
         end
       end
     end
