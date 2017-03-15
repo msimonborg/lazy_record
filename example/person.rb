@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+# Example class
 class Person < LazyRecord::Base
   lr_attr_accessor :name, :age, :haircut
   lr_has_many :dogs, :cats
