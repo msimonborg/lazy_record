@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module LazyRecord
   # Generate dynamic modules for dynamic methods created with #define_method,
   # for insertion into inheritance chain. This allows you to make calls to

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module LazyRecord
   class Relation
     include Enumerable
@@ -12,16 +13,15 @@ module LazyRecord
       self_extend_scopes_module
       array&.each do |object|
         @all << object && next if object.is_a?(model)
-        raise ArgumentError, "Argument must be a collection of #{model.to_s.tableize}"
+        message = "Argument must be a collection of #{model.to_s.tableize}"
+        raise ArgumentError, message
       end
     end
 
     def <<(other)
-      if other.is_a?(model)
-        all << other
-      else
-        raise ArgumentError, "object must be of type #{model}"
-      end
+      message = "object must be of type #{model}"
+      raise ArgumentError, message unless other.is_a?(model)
+      all << other
     end
 
     def inspect
@@ -29,7 +29,13 @@ module LazyRecord
     end
 
     def where(condition)
-      result = all.select { |x| eval "x.#{condition}" }
+      result = all.select do |x|
+        if condition.is_a? Hash
+          condition.all? { |key, val| x.send(key) == val }
+        else
+          eval "x.#{condition}"
+        end
+      end
       self.class.new(model: model, array: result)
     end
 
@@ -52,10 +58,8 @@ module LazyRecord
     private :clear, :all
 
     def self_extend_scopes_module
-      if model.const_defined?(:ScopeMethods, _search_ancestors = false)
-        mod = eval("#{model}::ScopeMethods")
-        extend(mod)
-      end
+      return unless model.const_defined?(:ScopeMethods, _search_ancestors = false)
+      extend(model::ScopeMethods)
     end
   end
 end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module LazyRecord
   # Set up in-memory associations between POROs.
   module Associations
@@ -7,19 +8,18 @@ module LazyRecord
 
     def define_collection_getter(collection, class_name)
       define_method(collection) do
-        eval "@#{collection} ||= Relation.new(model: class_name)"
+        if instance_variable_get("@#{collection}").nil?
+          instance_variable_set("@#{collection}", Relation.new(model: class_name))
+        end
+        instance_variable_get("@#{collection}")
       end
     end
 
     def define_collection_setter(collection, class_name)
       define_method("#{collection}=") do |coll|
         coll = Relation.new(model: class_name, array: coll) if coll.is_a?(Array)
-        if coll.is_a? Relation
-          instance_variable_set('@' + collection.to_s, coll)
-        else
-          raise ArgumentError, 'Argument must be a collection of '\
-          "#{collection}"
-        end
+        return instance_variable_set("@#{collection}", coll) if coll.is_a? Relation
+        raise ArgumentError, "Argument must be a collection of #{collection}"
       end
     end
 
@@ -38,7 +38,7 @@ module LazyRecord
     def define_association_attributes_setter(collection, class_name)
       define_method("#{collection}_attributes=") do |collection_attributes|
         collection_attributes.values.each do |attributes|
-          eval "@#{collection} << #{class_name}.new(attributes)"
+          send(collection) << class_name.new(attributes)
         end
         collection
       end

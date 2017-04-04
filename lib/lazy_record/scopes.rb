@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module LazyRecord
   # Add ActiveRecord-style scope macros to your classes. Allows chaining.
   module Scopes

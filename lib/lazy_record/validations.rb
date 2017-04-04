@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module LazyRecord
   # Validations callbacks. If validations don't pass then initialization
   # will return false.
@@ -22,10 +23,9 @@ module LazyRecord
       mod.extend(Validations)
       opts = args.extract_options!
       @validations = args
-      if opts[:presence] == true
-        mod.module_eval do
-          define_validation
-        end
+      return unless opts[:presence] == true
+      mod.module_eval do
+        define_validation
       end
     end
   end

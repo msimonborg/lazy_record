@@ -1,5 +1,8 @@
 # frozen_string_literal: true
+
 module LazyRecord
+  # This module gives the Base class its functionality, and can be included
+  # in any class as an alternative to inheriting from LazyRecord::Base
   module BaseModule
     def self.included(base)
       base.extend(
@@ -39,6 +42,7 @@ module LazyRecord
 
     private :id=
 
+    # Class methods provided to all LazyRecord classes
     module ClassMethods
       attr_reader :all
 

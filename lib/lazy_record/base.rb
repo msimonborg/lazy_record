@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module LazyRecord
   # Inherit from LazyRecord::Base to achieve lazier development.
   #

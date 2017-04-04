@@ -5,20 +5,24 @@ class Person < LazyRecord::Base
   lr_has_many :dogs, :cats
   lr_accepts_nested_attributes_for :dogs, :cats
 
-  can_multiply
-
-  lr_scope :new_with_dog, ->(opts = {}) {
+  lr_scope :new_with_dog, lambda { |opts = {}|
     opts[:dog] = {} unless opts[:dog]
-    self.new(opts) { |p| p.adopt_a_dog(opts[:dog]) }
+    new(opts) { |p| p.adopt_a_dog(opts[:dog]) }
   }
   lr_scope :young, -> { where('age < 30') }
-  lr_scope :short_hair, -> { where('haircut == "short"') }
+  lr_scope :old, -> { where('age > 30') }
+  lr_scope :short_hair, -> { where(haircut: 'short') }
 
-  lr_method :speak, -> (string) { puts string }
+  lr_method :speak, ->(string) { puts string }
   lr_method :add_dog, :name, 'dogs << Dog.new(name: name)'
   lr_method :introduce_yourself, 'puts "Hello, my name is #{name}"'
 
   lr_validates :name, :age, presence: true
+
+  def self.new(opts = {}, &block)
+    puts 'hi'
+    super opts, &block
+  end
 
   def self.make_people(*args, &block)
     opts = args.extract_options!

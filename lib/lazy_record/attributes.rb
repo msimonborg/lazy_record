@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module LazyRecord
   # Add special attr_accessors that automatically add initialization options
   # to your initialize method. Using lr_attr_accessor, you automatically get
@@ -24,7 +25,7 @@ module LazyRecord
           send("#{attr}=", opts[attr.to_sym])
         end
 
-        block.call self if block
+        block&.call self
         self
       end
     end
@@ -52,14 +53,12 @@ module LazyRecord
       end
     end
 
-
     def define_instance_attr_accessors(*names)
       define_method(:instance_attr_accessors) do
         names.map(&:to_sym)
       end
       private :instance_attr_accessors
     end
-
 
     def lr_attr_accessor(*names)
       include mod = get_or_set_mod(ATTR_MODULE_NAME)
