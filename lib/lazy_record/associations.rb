@@ -7,20 +7,26 @@ module LazyRecord
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
     def define_collection_getter(collection, class_name)
+      model = apply_nesting(class_name).constantize
       define_method(collection) do
         if instance_variable_get("@#{collection}").nil?
-          instance_variable_set("@#{collection}", Relation.new(model: class_name))
+          instance_variable_set("@#{collection}", Relation.new(model: model))
         end
         instance_variable_get("@#{collection}")
       end
     end
 
     def define_collection_setter(collection, class_name)
+      model = apply_nesting(class_name).constantize
       define_method("#{collection}=") do |coll|
-        coll = Relation.new(model: class_name, array: coll) if coll.is_a?(Array)
+        coll = Relation.new(model: model, array: coll) if coll.is_a?(Array)
         return instance_variable_set("@#{collection}", coll) if coll.is_a? Relation
         raise ArgumentError, "Argument must be a collection of #{collection}"
       end
+    end
+
+    def apply_nesting(class_name)
+      "#{self.to_s.split('::')[0..-3].join('::')}::#{class_name}"
     end
 
     def lr_has_many(*collections)
@@ -28,7 +34,7 @@ module LazyRecord
       mod.extend(Associations)
       mod.module_eval do
         collections.each do |collection|
-          class_name = collection.to_s.classify.constantize
+          class_name = collection.to_s.classify
           define_collection_getter(collection, class_name)
           define_collection_setter(collection, class_name)
         end
