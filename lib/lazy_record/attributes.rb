@@ -21,6 +21,11 @@ module LazyRecord
 
     def define_initialize
       define_method(:initialize) do |opts = {}, &block|
+        opts = opts.inject({}) do |memo, (k,v)|
+          memo[k.to_sym] = v
+          memo
+        end
+
         instance_attr_accessors.each do |attr|
           send("#{attr}=", opts[attr.to_sym])
         end

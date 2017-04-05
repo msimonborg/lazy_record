@@ -26,7 +26,7 @@ module LazyRecord
     end
 
     def apply_nesting(class_name)
-      "#{self.to_s.split('::')[0..-3].join('::')}::#{class_name}"
+      "#{to_s.split('::')[0..-3].join('::')}::#{class_name}"
     end
 
     def lr_has_many(*collections)
