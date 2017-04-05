@@ -80,5 +80,5 @@ class Person < LazyRecord::Base
       friend: true,
       years_known: 6
     }
-  ).freeze
+  )
 end
