@@ -21,13 +21,10 @@ module LazyRecord
 
     def define_initialize
       define_method(:initialize) do |opts = {}, &block|
-        opts = opts.inject({}) do |memo, (k,v)|
-          memo[k.to_sym] = v
-          memo
-        end
-
-        instance_attr_accessors.each do |attr|
-          send("#{attr}=", opts[attr.to_sym])
+        opts.each do |k, v|
+          if respond_to?("#{k}=")
+            send("#{k}=", v)
+          end
         end
 
         block&.call self
