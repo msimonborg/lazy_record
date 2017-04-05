@@ -19,7 +19,10 @@ module LazyRecord
 
     attr_writer :id
 
-    def initialize(_opts = {})
+    def initialize(opts = {})
+      opts.each do |k, v|
+        send("#{k}=", v) if respond_to?("#{k}=")
+      end
       yield self if block_given?
     end
 

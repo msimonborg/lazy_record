@@ -19,16 +19,16 @@ class Person < LazyRecord::Base
 
   lr_validates :name, :age, presence: true
 
-  def self.new(opts = {}, &block)
+  def self.new(opts = {})
     puts 'hi'
-    super opts, &block
+    super
   end
 
-  def self.make_people(*args, &block)
+  def self.make_people(*args)
     opts = args.extract_options!
 
     people = args.map do |arg|
-      Person.new { |p| p.name = arg }
+      Person.new { |p| p.name = arg; p.age = 30 }
     end
 
     if opts[:count] == true
@@ -43,16 +43,16 @@ class Person < LazyRecord::Base
       end
     end
 
-    people.each { |person| block.call(person) } if block
+    people.each { |person| yield person } if block_given?
 
     people
   end
 
-  def times(num, &block)
-    if block
+  def times(num)
+    if block_given?
       i = 0
       while i < num
-        block.call
+        yield
         i += 1
       end
       i
@@ -61,9 +61,9 @@ class Person < LazyRecord::Base
     end
   end
 
-  def adopt_a_dog(opts = {}, &block)
+  def adopt_a_dog(opts = {})
     dog = Dog.new(opts)
-    block.call(dog) if block
+    yield dog if block_given?
     self.dogs << dog
     dog
   end

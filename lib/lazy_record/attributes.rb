@@ -19,17 +19,6 @@ module LazyRecord
       end
     end
 
-    def define_initialize
-      define_method(:initialize) do |opts = {}, &block|
-        opts.each do |k, v|
-          send("#{k}=", v) if respond_to?("#{k}=")
-        end
-
-        block&.call self
-        self
-      end
-    end
-
     def define_instance_attrs_to_s
       define_method(:instance_attrs_to_s) do
         instance_attr_accessors.map do |attr|
@@ -53,7 +42,6 @@ module LazyRecord
       mod.module_eval do
         names.each { |name| define_setters_and_getters(name) }
         define_instance_attr_accessors(*names)
-        define_initialize
         define_instance_attrs_to_s
       end
     end
