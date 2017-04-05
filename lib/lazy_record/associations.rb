@@ -25,6 +25,28 @@ module LazyRecord
       end
     end
 
+    def define_collection_counter(collection)
+      define_method("#{collection}_count") do
+        send(collection).count
+      end
+    end
+
+    def define_collections(*collections)
+      define_method(:collections) do
+        instance_variable_get(:@collections) || instance_variable_set(:@collections,
+                                                                      collections)
+      end
+    end
+
+    def define_collection_counts_to_s
+      define_method(:collection_counts_to_s) do
+        collections.map do |collection|
+          "#{collection}_count: #{stringify_value(send("#{collection}_count"))}"
+        end
+      end
+      private :collection_counts_to_s
+    end
+
     def apply_nesting(class_name)
       "#{to_s.split('::')[0..-3].join('::')}::#{class_name}"
     end
@@ -33,10 +55,13 @@ module LazyRecord
       include mod = get_or_set_mod(COLLECTION_MODULE_NAME)
       mod.extend(Associations)
       mod.module_eval do
+        define_collections(*collections)
+        define_collection_counts_to_s
         collections.each do |collection|
           class_name = collection.to_s.classify
           define_collection_getter(collection, class_name)
           define_collection_setter(collection, class_name)
+          define_collection_counter(collection)
         end
       end
     end

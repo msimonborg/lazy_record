@@ -22,9 +22,7 @@ module LazyRecord
     def define_initialize
       define_method(:initialize) do |opts = {}, &block|
         opts.each do |k, v|
-          if respond_to?("#{k}=")
-            send("#{k}=", v)
-          end
+          send("#{k}=", v) if respond_to?("#{k}=")
         end
 
         block&.call self
@@ -36,23 +34,10 @@ module LazyRecord
       define_method(:instance_attrs_to_s) do
         instance_attr_accessors.map do |attr|
           value = send(attr)
-          attr_to_s = stringify_value(value)
-          "#{attr.to_s.delete(':')}: #{attr_to_s}"
+          "#{attr}: #{stringify_value(value)}"
         end
       end
       private :instance_attrs_to_s
-    end
-
-    def define_stringify_value
-      define_method(:stringify_value) do |value|
-        if value.is_a?(String)
-          "\"#{value}\""
-        elsif value.nil?
-          'nil'
-        else
-          value
-        end
-      end
     end
 
     def define_instance_attr_accessors(*names)
@@ -70,7 +55,6 @@ module LazyRecord
         define_instance_attr_accessors(*names)
         define_initialize
         define_instance_attrs_to_s
-        define_stringify_value
       end
     end
   end

@@ -31,16 +31,35 @@ module LazyRecord
       []
     end
 
+    def collection_counts_to_s
+      []
+    end
+
     def inspect
       "#<#{self.class} id: #{id ? id : 'nil'}"\
-      "#{instance_attrs_to_s.unshift('').join(', ')}>"
+      "#{instance_attrs_to_s.unshift('').join(', ')}"\
+      "#{collection_counts_to_s.unshift('').join(', ')}>"
     end
 
     def id
       @id.freeze
     end
 
-    private :id=
+    def stringify_value(value)
+      if value.is_a?(String)
+        "\"#{value}\""
+      elsif value.nil?
+        'nil'
+      else
+        value
+      end
+    end
+
+    private :id=,
+            :stringify_value,
+            :instance_attrs_to_s,
+            :instance_attr_accessors,
+            :collection_counts_to_s
 
     # Class methods provided to all LazyRecord classes
     module ClassMethods
