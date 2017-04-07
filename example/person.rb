@@ -10,7 +10,7 @@ class Person < LazyRecord::Base
     new(opts) { |p| p.adopt_a_dog(opts[:dog]) }
   }
   lr_scope :young, -> { where('age < 30') }
-  lr_scope :old, -> { where('age > 30') }
+  lr_scope :old, -> { where { |x| x.age > 30 } }
   lr_scope :short_hair, -> { where(haircut: 'short') }
 
   lr_method :speak, ->(string) { puts string }

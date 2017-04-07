@@ -137,7 +137,23 @@ Whatever.low_sleepy
 Whatever.where('id == 1')
 # => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>
 ```
-
+You can also use hash syntax and block syntax with `.where`. Block syntax will yield each object in the collection to the block for evaluation.
+```ruby
+Whatever.where { |w| w.sleepy_value > 5 }
+# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>, #<Whatever id: 3, party_value: 4, sleepy_value: 11>]>
+Whatever.where { |w| w.sleepy_value == w.party_value }
+# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>]>
+```
+When using hash syntax can be a value, an expression, or a Proc object.
+```ruby
+Whatever.where party_value: 12
+# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>]>
+Whatever.where party_value: 7 + 6, sleepy_value: 3
+# => #<WhateverRelation [#<Whatever id: 2, party_value: 13, sleepy_value: 3>]>
+num = 6
+Whatever.where party_value: -> { num * 2 }
+# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>]>
+```
 Use `lr_method` for an alternative API for defining short instance methods. Can use lambda syntax or string syntax. Best for quick one-liners. If the method references `self` of the instance, either explicitly or implicitly, it needs to use the string syntax, since anything passed into the lambda will be evaluated in the context of the Class level scope.
 
 ```ruby

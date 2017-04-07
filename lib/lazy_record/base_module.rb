@@ -80,8 +80,8 @@ module LazyRecord
         @all.last
       end
 
-      def where(condition)
-        @all.where(condition)
+      def where(condition = nil, &block)
+        @all.where(condition, &block)
       end
 
       def destroy_all

@@ -28,11 +28,16 @@ module LazyRecord
       "\#<#{model}Relation [#{all.map(&:inspect).join(', ')}]>"
     end
 
-    def where(condition)
+    def where(condition = nil)
       result = all.select do |x|
         if condition.is_a? Hash
-          condition.all? { |key, val| x.send(key) == val }
-        else
+          condition.all? do |key, val|
+            val = val.call if val.is_a? Proc
+            x.send(key) == val
+          end
+        elsif block_given?
+          yield x
+        elsif condition
           eval "x.#{condition}"
         end
       end
