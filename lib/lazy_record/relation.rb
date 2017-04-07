@@ -63,8 +63,8 @@ module LazyRecord
     private :clear, :all
 
     def self_extend_scopes_module
-      return unless model.const_defined?(:ScopeMethods, _search_ancestors = false)
-      extend(model::ScopeMethods)
+      return unless model.const_defined?(Scopes::SCOPE_MODULE_NAME, _search_ancestors = false)
+      extend(model.const_get(Scopes::SCOPE_MODULE_NAME))
     end
   end
 end
