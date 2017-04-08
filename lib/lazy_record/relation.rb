@@ -7,6 +7,7 @@ module LazyRecord
     attr_reader :model, :all
 
     def initialize(model:, array: nil)
+      model = model.call if model.is_a? Proc
       raise ArgumentError, 'model must be a class' unless model.is_a?(Class)
       @model = model
       @all   = []

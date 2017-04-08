@@ -7,7 +7,7 @@ module LazyRecord
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
     def define_collection_getter(collection, class_name)
-      model = apply_nesting(class_name).constantize
+      model = -> { apply_nesting(class_name).constantize }
       define_method(collection) do
         if instance_variable_get("@#{collection}").nil?
           instance_variable_set("@#{collection}", Relation.new(model: model))
@@ -17,7 +17,7 @@ module LazyRecord
     end
 
     def define_collection_setter(collection, class_name)
-      model = apply_nesting(class_name).constantize
+      model = -> { apply_nesting(class_name).constantize }
       define_method("#{collection}=") do |coll|
         coll = Relation.new(model: model, array: coll) if coll.is_a?(Array)
         return instance_variable_set("@#{collection}", coll) if coll.is_a? Relation
