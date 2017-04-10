@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module LazyRecord
+  # Collection of LazyRecord objects that are bound to a single class.
+  # The Relation inherits scope methods from the class it is bound to.
   class Relation
     include Enumerable
 
@@ -30,19 +32,23 @@ module LazyRecord
     end
 
     def where(condition = nil)
-      result = all.select do |x|
+      result = all.select do |instance|
         if condition.is_a? Hash
-          condition.all? do |key, val|
-            val = val.call if val.is_a? Proc
-            x.send(key) == val
-          end
+          select_by_hash_condition(condition, instance)
         elsif block_given?
-          yield x
+          yield instance
         elsif condition
-          eval "x.#{condition}"
+          eval "instance.#{condition}"
         end
       end
       self.class.new(model: model, array: result)
+    end
+
+    def select_by_hash_condition(condition, instance)
+      condition.all? do |key, val|
+        val = val.call if val.is_a? Proc
+        instance.send(key) == val
+      end
     end
 
     def each(&block)
@@ -64,7 +70,8 @@ module LazyRecord
     private :clear, :all
 
     def self_extend_scopes_module
-      return unless model.const_defined?(Scopes::SCOPE_MODULE_NAME, _search_ancestors = false)
+      return unless model.const_defined?(Scopes::SCOPE_MODULE_NAME,
+                                         _search_ancestors = false)
       extend(model.const_get(Scopes::SCOPE_MODULE_NAME))
     end
   end

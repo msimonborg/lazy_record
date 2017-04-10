@@ -5,16 +5,14 @@ module LazyRecord
   # in any class as an alternative to inheriting from LazyRecord::Base
   module BaseModule
     def self.included(base)
-      base.extend(
-        ClassMethods,
-        Scopes,
-        Attributes,
-        Associations,
-        Callbacks,
-        Validations,
-        Methods,
-        DynamicModules
-      )
+      base.extend ClassMethods
+      base.extend Scopes
+      base.extend Attributes
+      base.extend Associations
+      base.extend Callbacks
+      base.extend Validations
+      base.extend Methods
+      base.extend DynamicModules
     end
 
     attr_writer :id

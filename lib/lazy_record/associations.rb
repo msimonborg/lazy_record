@@ -6,8 +6,8 @@ module LazyRecord
     COLLECTION_MODULE_NAME   = :Collections
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
-    def define_collection_getter(collection, class_name)
-      model = -> { apply_nesting(class_name).constantize }
+    def define_collection_getter(collection)
+      model = find_scoped_class(collection)
       define_method(collection) do
         if instance_variable_get("@#{collection}").nil?
           instance_variable_set("@#{collection}", Relation.new(model: model))
@@ -16,13 +16,17 @@ module LazyRecord
       end
     end
 
-    def define_collection_setter(collection, class_name)
-      model = -> { apply_nesting(class_name).constantize }
+    def define_collection_setter(collection)
+      model = find_scoped_class(collection)
       define_method("#{collection}=") do |coll|
         coll = Relation.new(model: model, array: coll) if coll.is_a?(Array)
         return instance_variable_set("@#{collection}", coll) if coll.is_a? Relation
         raise ArgumentError, "Argument must be a collection of #{collection}"
       end
+    end
+
+    def find_scoped_class(collection)
+      -> { apply_nesting(collection.to_s.classify).constantize }
     end
 
     def define_collection_counter(collection)
@@ -33,8 +37,7 @@ module LazyRecord
 
     def define_collections(*collections)
       define_method(:collections) do
-        instance_variable_get(:@collections) || instance_variable_set(:@collections,
-                                                                      collections)
+        collections
       end
     end
 
@@ -54,15 +57,16 @@ module LazyRecord
     def lr_has_many(*collections)
       include mod = get_or_set_mod(COLLECTION_MODULE_NAME)
       mod.extend(Associations)
-      mod.module_eval do
-        define_collections(*collections)
-        define_collection_counts_to_s
-        collections.each do |collection|
-          class_name = collection.to_s.classify
-          define_collection_getter(collection, class_name)
-          define_collection_setter(collection, class_name)
-          define_collection_counter(collection)
-        end
+      mod.module_eval { add_collection_methods(collections) }
+    end
+
+    def add_collection_methods(collections)
+      define_collections(*collections)
+      define_collection_counts_to_s
+      collections.each do |collection|
+        define_collection_getter(collection)
+        define_collection_setter(collection)
+        define_collection_counter(collection)
       end
     end
 
