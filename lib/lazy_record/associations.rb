@@ -7,7 +7,7 @@ module LazyRecord
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
     def define_collection_getter(collection)
-      model = find_scoped_class(collection)
+      model = find_scoped_collection_class(collection)
       define_method(collection) do
         if instance_variable_get("@#{collection}").nil?
           instance_variable_set("@#{collection}", Relation.new(model: model))
@@ -17,7 +17,7 @@ module LazyRecord
     end
 
     def define_collection_setter(collection)
-      model = find_scoped_class(collection)
+      model = find_scoped_collection_class(collection)
       define_method("#{collection}=") do |coll|
         coll = Relation.new(model: model, array: coll) if coll.is_a?(Array)
         return instance_variable_set("@#{collection}", coll) if coll.is_a? Relation
@@ -25,7 +25,7 @@ module LazyRecord
       end
     end
 
-    def find_scoped_class(collection)
+    def find_scoped_collection_class(collection)
       -> { apply_nesting(collection.to_s.classify).constantize }
     end
 
@@ -60,6 +60,12 @@ module LazyRecord
       mod.module_eval { add_collection_methods(collections) }
     end
 
+    def lr_has_one(*args)
+      include mod = get_or_set_mod(COLLECTION_MODULE_NAME)
+      mod.extend(Associations) unless mod.const_defined?('Associations')
+      mod.module_eval { add_has_one_methods(args) }
+    end
+
     def add_collection_methods(collections)
       define_collections(*collections)
       define_collection_counts_to_s
@@ -70,7 +76,49 @@ module LazyRecord
       end
     end
 
-    def define_association_attributes_setter(collection, class_name)
+    def add_has_one_methods(args)
+      define_has_one_associations(*args)
+      define_has_one_associations_to_s
+      args.each do |association|
+        define_association_setter(association)
+        define_association_getter(association)
+      end
+    end
+
+    def define_has_one_associations(*args)
+      define_method(:associations) do
+        args
+      end
+    end
+
+    def define_has_one_associations_to_s
+      define_method(:has_one_associations_to_s) do
+        associations.map do |association|
+          "#{association}: #{stringify_value(send(association))}"
+        end
+      end
+      private :has_one_associations_to_s
+    end
+
+    def define_association_setter(association)
+      model = find_scoped_association_class(association)
+      define_method("#{association}=") do |assoc|
+        return instance_variable_set("@#{association}", assoc) if assoc.is_a? model.call
+        raise ArgumentError, "Argument must be a #{model.call}"
+      end
+    end
+
+    def define_association_getter(association)
+      define_method(association) do
+        instance_variable_get("@#{association}")
+      end
+    end
+
+    def find_scoped_association_class(association)
+      -> { apply_nesting(association.to_s.camelize).constantize }
+    end
+
+    def define_collection_attributes_setter(collection, class_name)
       define_method("#{collection}_attributes=") do |collection_attributes|
         collection_attributes.values.each do |attributes|
           send(collection) << class_name.new(attributes)
@@ -85,7 +133,7 @@ module LazyRecord
       mod.module_eval do
         collections.each do |collection|
           class_name = collection.to_s.classify.constantize
-          define_association_attributes_setter(collection, class_name)
+          define_collection_attributes_setter(collection, class_name)
         end
       end
     end

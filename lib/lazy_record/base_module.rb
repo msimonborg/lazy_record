@@ -36,9 +36,14 @@ module LazyRecord
       []
     end
 
+    def has_one_associations_to_s
+      []
+    end
+
     def inspect
       "#<#{self.class} id: #{id ? id : 'nil'}"\
       "#{instance_attrs_to_s.unshift('').join(', ')}"\
+      "#{has_one_associations_to_s.unshift('').join(', ')}"\
       "#{collection_counts_to_s.unshift('').join(', ')}>"
     end
 
@@ -64,26 +69,28 @@ module LazyRecord
 
     # Class methods provided to all LazyRecord classes
     module ClassMethods
-      attr_reader :all
+      def all
+        @all ||= Relation.new(model: self)
+      end
 
       def count
-        @all.count
+        all.count
       end
 
       def first
-        @all.first
+        all.first
       end
 
       def last
-        @all.last
+        all.last
       end
 
       def where(condition = nil, &block)
-        @all.where(condition, &block)
+        all.where(condition, &block)
       end
 
       def destroy_all
-        @all.send(:clear)
+        all.send(:clear)
       end
     end
   end

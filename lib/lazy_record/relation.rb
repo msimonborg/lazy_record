@@ -63,6 +63,10 @@ module LazyRecord
       self[-1]
     end
 
+    def empty?
+      all.empty?
+    end
+
     def clear
       all.clear
     end
