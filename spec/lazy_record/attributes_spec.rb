@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 describe 'Attributes' do
   it_can_include_and_inherit 'AttributeSpec1' do
     AttributeSpec1.class_eval { lr_attr_accessor :name }

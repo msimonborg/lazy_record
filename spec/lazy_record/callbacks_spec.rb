@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CallbacksTest
   extend LazyRecord::Callbacks
   attr_accessor :id
@@ -33,11 +35,11 @@ describe 'Callbacks' do
       attr_accessor :valid
       attr_accessor :validated
 
-      def initialize(opts = {}, &block)
+      def initialize(opts = {})
         self.valid = opts[:valid]
       end
 
-      def validation(*args)
+      def validation(*_args)
         if valid
           self.validated = true
           self

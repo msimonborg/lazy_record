@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe 'Relations' do
   it_can_include_and_inherit 'Member' do
     it 'can create a Relation bound to the Member class' do
@@ -36,12 +38,11 @@ describe 'Relations' do
       add_non_members = lambda do
         LazyRecord::Relation.new(model: Member, array: non_members)
       end
-      
+
       expect(&add_non_members).to raise_error(ArgumentError, 'Argument must be a collection of members')
     end
 
     it 'is enumerable on its Members' do
-
     end
   end
 end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 describe 'Associations' do
   it_can_include_and_inherit 'Parent', 'Child' do
     Parent.class_eval { lr_has_many :children }
@@ -30,8 +31,8 @@ describe 'Associations' do
     it 'cannot set #children as anything else but a collection of children' do
       non_children = []
       10.times { non_children << Object.new }
-      add_non_children = lambda { Parent.new { |p| p.children = non_children } }
-      add_non_child = lambda { Parent.new { |p| p.children = Object.new } }
+      add_non_children = -> { Parent.new { |p| p.children = non_children } }
+      add_non_child = -> { Parent.new { |p| p.children = Object.new } }
       expect(&add_non_children).to raise_error(ArgumentError, 'Argument must be a collection of children')
       expect(&add_non_child).to raise_error(ArgumentError, 'Argument must be a collection of children')
     end

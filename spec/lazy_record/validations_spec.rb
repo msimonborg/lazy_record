@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 describe 'Validations' do
   it_can_include_and_inherit 'ValidationSpec1' do
     ValidationSpec1.class_eval do

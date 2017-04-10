@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 describe 'Base' do
   it_can_include_and_inherit 'BaseSpec' do
     it 'has block syntax in #initialize by default' do
