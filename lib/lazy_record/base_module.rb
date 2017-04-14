@@ -81,7 +81,7 @@ module LazyRecord
     module ClassMethods
       def public_attr_readers
         @public_attr_readers ||= attr_readers.reject do |reader|
-          private_method_defined?(reader)
+          private_method_defined?(reader) || protected_method_defined?(reader)
         end
       end
 

@@ -45,24 +45,50 @@ thing = Thing.new { |t| puts t.class.superclass }
 ```
 Every LazyRecord object is assigned an auto-incrementing ID after initialization. IDs reset when the program is terminated.
 
-Use `lr_attr_accessor` like you would use `attr_accessor`. You'll get hash syntax in your `#intialize` method for attribute setting.
+Use `attr_accessor` like you would use normally, and you'll get hash syntax in your `#intialize` method for attribute setting. The attributes will also be visible when the object is returned or `inspected`. Attributes defined with `attr_reader` will also be visible, but `attr_writers`, custom getters and writers, and other methods will not.
 
 ```ruby
 class Thing < LazyRecord::Base
-  lr_attr_accessor :stuff, :junk
+  attr_accessor :stuff, :junk
+  attr_reader :hmm
+  
+  def something
+    @something ||= 'something'
+  end
 end
 
 thing = Thing.new stuff: 'stuff' do |t|
   t.junk = 'junk'
 end
-# => #<Thing id: 1, stuff: "stuff", junk: "junk">
+# => #<Thing id: 1, stuff: "stuff", junk: "junk", hmm: nil>
+thing.something
+# => "something"
 ```
+If you want to define private or protected `attr_accessor`s or `attr_reader`s, they will not be visible when inspecting the object, and you should do so like the following example.
+```ruby
+class Thing < LazyRecord::Base
+  attr_accessor :stuff, :junk
+  private :junk, :junk= # passing the setter and getter method names as arguments to Module.private/Module.protected will work
+  
+  private_attr_accessor :hmm # this also works
+  protected_attr_accessor :huh # this works too
+  
+  private
+  attr_accessor :what # declaring the methods after calling the private method will not work, and the methods will be public and visible.
+                      # this is a bug due to the custom implementation of .attr_*, and if anyone can find a fix please submit it!
+                      # otherwise, the other two forms work just fine.
+                      # and really, who wants to declare private attr_accessors this way anyway :-P ?
+end
+```
+Earlier implementations used a custom `lr_attr_accessor` method, however this has been deprecated in favor of overriding `attr_*` so the methods will be parsed by RDoc.
+
+See @dbrady's `scoped_attr_accessor` gem for more info on the `scoped_attr_*` methods.
 
 Validate presence of attributes with `lr_validates` like you would with ActiveRecord. Failed validations will return false and the ID will not be incremented. More validation options coming in the future.
 
 ```ruby
 class Thing < LazyRecord::Base
-  lr_attr_accessor :stuff, :junk
+  attr_accessor :stuff, :junk
   lr_validates :stuff, presence: true
 end
 
@@ -79,7 +105,7 @@ class Whatever < LazyRecord::Base
 end
 
 class Thing < LazyRecord::Base
-  lr_attr_accessor :stuff, :junk
+  attr_accessor :stuff, :junk
   lr_validates :stuff, presence: true
   lr_has_many :whatevers
 end
@@ -101,7 +127,7 @@ Use `lr_scope` and `#where` to create class scope methods and query objects. Wor
 
 ```ruby
 class Whatever < LazyRecord::Base
-  lr_attr_accessor :party_value, :sleepy_value
+  attr_accessor :party_value, :sleepy_value
   lr_scope :big_party, -> { where('party_value > 10') }
   lr_scope :low_sleepy, -> { where('sleepy_value < 10') }
 end
@@ -158,13 +184,13 @@ Use `lr_method` for an alternative API for defining short instance methods. Can 
 
 ```ruby
 class Whatever < LazyRecord::Base
-  lr_attr_accessor :party_value, :sleepy_value, :right
+  attr_accessor :party_value, :sleepy_value, :right
   lr_scope :big_party, -> { where('party_value > 10') }
   lr_scope :low_sleepy, -> { where('sleepy_value < 10') }
 end
 
 class Thing < LazyRecord::Base
-  lr_attr_accessor :stuff, :junk
+  attr_accessor :stuff, :junk
   lr_validates :stuff, presence: true
   lr_has_many :whatevers
   lr_method :speak, -> (string) { puts string }
