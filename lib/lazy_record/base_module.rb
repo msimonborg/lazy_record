@@ -4,6 +4,7 @@ module LazyRecord
   # This module gives the Base class its functionality, and can be included
   # in any class as an alternative to inheriting from LazyRecord::Base
   module BaseModule
+    # Extend these modules when BaseModule is included
     def self.included(base)
       base.extend ClassMethods
       base.extend Scopes
@@ -17,23 +18,25 @@ module LazyRecord
 
     attr_writer :id
 
+    # Use options hash to set attributes, and/or operate on object in a block.
+    # Checks each options key for a matching attribute setter method.
     def initialize(opts = {})
-      opts.each do |k, v|
-        send("#{k}=", v) if respond_to?("#{k}=")
+      opts.each do |key, val|
+        send("#{key}=", val) if respond_to?("#{key}=")
       end
       yield self if block_given?
     end
 
-    def instance_attrs_to_s
-      []
-    end
-
-    def instance_attr_accessors
-      []
-    end
-
     def collection_counts_to_s
       []
+    end
+
+    def public_attr_readers_to_s
+      @public_attr_readers_to_s ||=
+        self.class.send(:public_attr_readers).map do |attr|
+          value = send(attr)
+          "#{attr}: #{stringify_value(value)}"
+        end
     end
 
     def has_one_associations_to_s
@@ -41,10 +44,16 @@ module LazyRecord
     end
 
     def inspect
-      "#<#{self.class} id: #{id ? id : 'nil'}"\
-      "#{instance_attrs_to_s.unshift('').join(', ')}"\
-      "#{has_one_associations_to_s.unshift('').join(', ')}"\
-      "#{collection_counts_to_s.unshift('').join(', ')}>"
+      format('#<%s id: %s%s%s%s>',
+             self.class,
+             display_id_even_if_nil,
+             public_attr_readers_to_s.unshift('').join(', '),
+             has_one_associations_to_s.unshift('').join(', '),
+             collection_counts_to_s.unshift('').join(', '))
+    end
+
+    def display_id_even_if_nil
+      id ? id.to_s : 'nil'
     end
 
     def id
@@ -62,13 +71,17 @@ module LazyRecord
     end
 
     private :id=,
+            :display_id_even_if_nil,
             :stringify_value,
-            :instance_attrs_to_s,
-            :instance_attr_accessors,
+            :public_attr_readers_to_s,
             :collection_counts_to_s
 
     # Class methods provided to all LazyRecord classes
     module ClassMethods
+      def public_attr_readers
+        @public_attr_readers ||= []
+      end
+
       def all
         @all ||= Relation.new(model: self)
       end

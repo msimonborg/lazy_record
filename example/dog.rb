@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 # Example class
 class Dog < LazyRecord::Base
-  lr_attr_accessor :name, :breed, :weight
+  attr_accessor :name, :breed, :weight
   lr_has_many :friends
 
   def initialize(opts = {})
