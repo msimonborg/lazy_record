@@ -92,18 +92,18 @@ module LazyRecord
     end
 
     def define_has_one_associations_to_s
-      define_method(:has_one_associations_to_s) do
+      define_method(:associations_to_s) do
         associations.map do |association|
           "#{association}: #{stringify_value(send(association))}"
         end
       end
-      private :has_one_associations_to_s
+      private :associations_to_s
     end
 
-    def define_association_setter(association)
-      model = find_scoped_association_class(association)
-      define_method("#{association}=") do |assoc|
-        return instance_variable_set("@#{association}", assoc) if assoc.is_a? model.call
+    def define_association_setter(assoc)
+      model = find_scoped_association_class(assoc)
+      define_method("#{assoc}=") do |value|
+        return instance_variable_set("@#{assoc}", value) if value.is_a? model.call
         raise ArgumentError, "Argument must be a #{model.call}"
       end
     end

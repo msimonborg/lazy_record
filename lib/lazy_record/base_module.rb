@@ -40,7 +40,7 @@ module LazyRecord
         end
     end
 
-    def has_one_associations_to_s
+    def associations_to_s
       []
     end
 
@@ -49,7 +49,7 @@ module LazyRecord
              self.class,
              display_id_even_if_nil,
              public_attr_readers_to_s.dup.unshift('').join(', '),
-             has_one_associations_to_s.unshift('').join(', '),
+             associations_to_s.unshift('').join(', '),
              collection_counts_to_s.unshift('').join(', '))
     end
 
