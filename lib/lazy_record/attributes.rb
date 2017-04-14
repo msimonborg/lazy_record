@@ -14,17 +14,21 @@ module LazyRecord
       attr_accessor(*names)
     end
 
-    undef_method(:lr_attr_accessor) if LazyRecord::VERSION == '1.0.0'
+    undef_method(:lr_attr_accessor) if LazyRecord::VERSION >= '1.0.0'
 
     def attr_accessor(*names)
-      attr_reader(*names)
-      attr_writer(*names)
+      super(*names)
+      add_to_attr_readers(*names)
     end
 
     def attr_reader(*names)
       super(*names)
+      add_to_attr_readers(*names)
+    end
+
+    def add_to_attr_readers(*names)
       names.each do |name|
-        public_attr_readers << name.to_sym if public_method_defined?(name)
+        attr_readers << name.to_sym
       end
     end
   end

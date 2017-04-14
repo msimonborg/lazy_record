@@ -2,6 +2,8 @@
 
 require 'active_support'
 require 'active_support/inflector'
+require 'scoped_attr_accessor'
+
 require 'lazy_record/version'
 require 'lazy_record/associations'
 require 'lazy_record/attributes'

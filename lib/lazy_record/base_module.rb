@@ -6,6 +6,7 @@ module LazyRecord
   module BaseModule
     # Extend these modules when BaseModule is included
     def self.included(base)
+      base.extend ScopedAttrAccessor
       base.extend ClassMethods
       base.extend Scopes
       base.extend Attributes
@@ -47,7 +48,7 @@ module LazyRecord
       format('#<%s id: %s%s%s%s>',
              self.class,
              display_id_even_if_nil,
-             public_attr_readers_to_s.unshift('').join(', '),
+             public_attr_readers_to_s.dup.unshift('').join(', '),
              has_one_associations_to_s.unshift('').join(', '),
              collection_counts_to_s.unshift('').join(', '))
     end
@@ -79,7 +80,13 @@ module LazyRecord
     # Class methods provided to all LazyRecord classes
     module ClassMethods
       def public_attr_readers
-        @public_attr_readers ||= []
+        @public_attr_readers ||= attr_readers.reject do |reader|
+          private_method_defined?(reader)
+        end
+      end
+
+      def attr_readers
+        @attr_readers ||= []
       end
 
       def all
