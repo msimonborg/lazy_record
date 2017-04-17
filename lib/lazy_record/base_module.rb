@@ -10,6 +10,7 @@ module LazyRecord
       base.extend ClassMethods
       base.extend Scopes
       base.extend Attributes
+      base.extend Collections
       base.extend Associations
       base.extend Callbacks
       base.extend Validations

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe 'Associations' do
+describe 'Collections' do
   it_can_include_and_inherit 'Parent', 'Child' do
     Parent.class_eval { lr_has_many :children }
 

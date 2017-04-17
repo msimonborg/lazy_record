@@ -28,9 +28,7 @@ class Person < LazyRecord::Base
   def self.make_people(*args)
     opts = args.extract_options!
 
-    people = args.map do |arg|
-      Person.new(name: arg) { |p| p.age = 30 }
-    end
+    people = args.map { |arg| Person.new(name: arg) { |p| p.age = 30 } }
 
     puts "There are #{people.size} people!" if opts[:count] == true
 
