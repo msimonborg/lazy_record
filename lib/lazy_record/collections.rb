@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'lazy_record/nesting'
 
 module LazyRecord
