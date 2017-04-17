@@ -29,24 +29,18 @@ class Person < LazyRecord::Base
     opts = args.extract_options!
 
     people = args.map do |arg|
-      Person.new { |p| p.name = arg; p.age = 30 }
+      Person.new(name: arg) { |p| p.age = 30 }
     end
 
-    if opts[:count] == true
-      puts "There are #{people.size} people!"
-    end
+    puts "There are #{people.size} people!" if opts[:count] == true
 
     if opts[:dog]
-      people.each do |person|
-        person.adopt_a_dog(opts[:dog]) do |d|
-          d.name = "#{person.name}'s best friend"
-        end
+      people.each do |prsn|
+        prsn.adopt_a_dog(opts[:dog]) { |d| d.name = "#{prsn.name}'s best friend" }
       end
     end
 
-    people.each { |person| yield person } if block_given?
-
-    people
+    people.tap { |person| yield person } if block_given?
   end
 
   def times(num)
@@ -65,7 +59,7 @@ class Person < LazyRecord::Base
   def adopt_a_dog(opts = {})
     dog = Dog.new(opts)
     yield dog if block_given?
-    self.dogs << dog
+    dogs << dog
     dog
   end
 
