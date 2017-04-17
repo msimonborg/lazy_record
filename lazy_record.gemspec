@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.description   = 'Add some convenience macros for your POROs that cut down on boilerplate code. Method definition macros, more powerful attr_accessors, and easy associations between in-memory objects. Mocks the ActiveRecord API to make it feel comfortable and intuitive for Rails developers. The main intent of this project is to explore dynamic programming in Ruby. Maybe someone will find it useful. WIP.'
   spec.homepage      = 'https://www.github.com/msimonborg/lazy_record'
   spec.license       = 'MIT'
-  spec.required_ruby_version = '>= 2.1.0'
+  spec.required_ruby_version = '>= 2.3.0'
 
   if spec.respond_to?(:metadata)
     spec.metadata['allowed_push_host'] = 'https://rubygems.org'
@@ -33,8 +33,8 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'activesupport', '~> 5.0'
   spec.add_dependency 'scoped_attr_accessor', '~> 1.0', '>= 1.0.3'
 
-  spec.add_development_dependency 'pry'
-  spec.add_development_dependency 'rspec'
+  spec.add_development_dependency 'pry', '~> 0.10.0'
+  spec.add_development_dependency 'rspec', '~> 3.5.0'
   spec.add_development_dependency 'bundler', '~> 1.14'
   spec.add_development_dependency 'rake', '~> 10.0'
 end
