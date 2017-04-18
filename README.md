@@ -29,7 +29,7 @@ end
 
 thing = Thing.new { |t| puts t.class.superclass }
 # LazyRecord::Base
-# => #<Thing id: 1>
+# => #<Thing>
 ```
 
 Alternatively, if you want to inherit from another class, you can mix in the `LazyRecord::BaseModule` and get all the same results.
@@ -41,7 +41,7 @@ end
 
 thing = Thing.new { |t| puts t.class.superclass }
 # Object
-# => #<Thing id: 1>
+# => #<Thing>
 ```
 Every LazyRecord object is assigned an auto-incrementing ID after initialization. IDs reset when the program is terminated.
 
@@ -60,7 +60,7 @@ end
 thing = Thing.new stuff: 'stuff' do |t|
   t.junk = 'junk'
 end
-# => #<Thing id: 1, stuff: "stuff", junk: "junk", hmm: nil>
+# => #<Thing stuff: "stuff", junk: "junk", hmm: nil>
 thing.something
 # => "something"
 ```
@@ -95,7 +95,7 @@ end
 thing = Thing.new junk: 'junk'
 ArgumentError
 stuff must be given
-#<Thing id: nil, stuff: nil, junk: "junk">
+#<Thing stuff: nil, junk: "junk">
 # => false
 ```
 Use `lr_has_many` to set up associated collections of another class. `lr_belongs_to` will be added in a future update.
@@ -111,16 +111,16 @@ class Thing < LazyRecord::Base
 end
 
 whatever = Whatever.new
-# => #<Whatever id: 1>
+# => #<Whatever>
 
 thing = Thing.new do |t|
   t.stuff = 'stuff'
   t.whatevers << whatever
 end
-# => #<Thing id: 1, stuff: "stuff", junk: nil>
+# => #<Thing stuff: "stuff", junk: nil>
 
 thing.whatevers
-# => #<WhateverRelation [#<Whatever id: 1>]>
+# => #<WhateverRelation [#<Whatever>]>
 ```
 
 Use `lr_scope` and `#where` to create class scope methods and query objects. Works just like ActiveRecord scopes, including scope chaining. Only since it is all Ruby and no SQL, use `==` as the comparison operator.
@@ -146,39 +146,39 @@ thing = Thing.new do |t|
   t.stuff = 'stuff'
   t.whatevers = Whatever.all
 end
-# => #<Thing id: 1, stuff: "stuff", junk: nil>
+# => #<Thing stuff: "stuff", junk: nil>
 
 thing.whatevers.big_party
-# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>, #<Whatever id: 2, party_value: 13, sleepy_value: 3>]>
+# => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>, #<Whatever party_value: 13, sleepy_value: 3>]>
 
 thing.whatevers.low_sleepy
-# => #<WhateverRelation [#<Whatever id: 2, party_value: 13, sleepy_value: 3>, #<Whatever id: 4, party_value: 3, sleepy_value: 5>]>
+# => #<WhateverRelation [#<Whatever party_value: 13, sleepy_value: 3>, #<Whatever party_value: 3, sleepy_value: 5>]>
 
 thing.whatevers.big_party.low_sleepy
-# => #<WhateverRelation [#<Whatever id: 2, party_value: 13, sleepy_value: 3>]>
+# => #<WhateverRelation [#<Whatever party_value: 13, sleepy_value: 3>]>
 
 Whatever.low_sleepy
-# => #<WhateverRelation [#<Whatever id: 2, party_value: 13, sleepy_value: 3>, #<Whatever id: 4, party_value: 3, sleepy_value: 5>]>
+# => #<WhateverRelation [#<Whatever party_value: 13, sleepy_value: 3>, #<Whatever id: 4, party_value: 3, sleepy_value: 5>]>
 
-Whatever.where('id == 1')
-# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>
+Whatever.where('party_value == 12')
+# => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>
 ```
 You can also use hash syntax and block syntax with `.where`. Block syntax will yield each object in the collection to the block for evaluation.
 ```ruby
 Whatever.where { |w| w.sleepy_value > 5 }
-# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>, #<Whatever id: 3, party_value: 4, sleepy_value: 11>]>
+# => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>, #<Whatever id: 3, party_value: 4, sleepy_value: 11>]>
 Whatever.where { |w| w.sleepy_value == w.party_value }
-# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>]>
+# => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>]>
 ```
-When using hash syntax can be a value, an expression, or a Proc object.
+When using hash syntax the value can be an object, an expression, or a Proc.
 ```ruby
 Whatever.where party_value: 12
-# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>]>
+# => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>]>
 Whatever.where party_value: 7 + 6, sleepy_value: 3
-# => #<WhateverRelation [#<Whatever id: 2, party_value: 13, sleepy_value: 3>]>
+# => #<WhateverRelation [#<Whatever party_value: 13, sleepy_value: 3>]>
 num = 6
 Whatever.where party_value: -> { num * 2 }
-# => #<WhateverRelation [#<Whatever id: 1, party_value: 12, sleepy_value: 12>]>
+# => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>]>
 ```
 Use `lr_method` for an alternative API for defining short instance methods. Can use lambda syntax or string syntax. Best for quick one-liners. If the method references `self` of the instance, either explicitly or implicitly, it needs to use the string syntax, since anything passed into the lambda will be evaluated in the context of the Class level scope.
 
@@ -203,10 +203,10 @@ thing.speak "I'm a thing"
 # => nil
 
 thing.add_whatever(true)
-# => [#<Whatever id: 1, party_value: nil, sleepy_value: nil, right: true>]
+# => [#<Whatever party_value: nil, sleepy_value: nil, right: true>]
 
 thing.whatevers
-# => #<WhateverRelation [#<Whatever id: 1, party_value: nil, sleepy_value: nil, right: true>]>
+# => #<WhateverRelation [#<Whatever party_value: nil, sleepy_value: nil, right: true>]>
 ```
 
 ## Development

@@ -44,17 +44,19 @@ module LazyRecord
     end
 
     def inspect
-      format('#<%s %s>',
+      format('#<%s%s>',
              self.class,
              displayable_attributes.join(', '))
     end
 
     def displayable_attributes
-      [
+      attributes = [
         public_attr_readers_to_s.dup,
         associations_to_s.dup,
         collection_counts_to_s.dup
       ].flatten
+      return attributes if attributes.empty?
+      attributes.unshift(' ' + attributes.shift)
     end
 
     def stringify_value(value)
