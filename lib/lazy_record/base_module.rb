@@ -69,7 +69,8 @@ module LazyRecord
       end
     end
 
-    private :stringify_value,
+    private :displayable_attributes,
+            :stringify_value,
             :public_attr_readers_to_s,
             :collection_counts_to_s
 
