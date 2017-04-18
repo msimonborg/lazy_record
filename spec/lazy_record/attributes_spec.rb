@@ -2,7 +2,7 @@
 
 describe 'Attributes' do
   it_can_include_and_inherit 'AttributeSpec1' do
-    AttributeSpec1.class_eval { lr_attr_accessor :name }
+    AttributeSpec1.class_eval { attr_accessor :name }
 
     it 'can set attributes at initialization with an options hash' do
       a = AttributeSpec1.new(name: 'a name')
@@ -28,7 +28,7 @@ describe 'Attributes' do
 
   it_can_include_and_inherit 'AttributeSpec2' do
     AttributeSpec2.class_eval do
-      lr_attr_accessor :name, :age
+      attr_accessor :name, :age
     end
 
     it 'can define multiple attributes on one line' do
@@ -46,12 +46,12 @@ describe 'Attributes' do
 
   it_can_include_and_inherit 'AttributeSpec3' do
     AttributeSpec3.class_eval do
-      lr_attr_accessor :name
-      lr_attr_accessor :age
+      attr_accessor :name
+      attr_accessor :age
     end
 
     it 'can define multiple attributes on separate lines' do
-      a = AttributeSpec2.new(name: 'a name') { |a| a.age = 1 }
+      a = AttributeSpec3.new(name: 'a name') { |a| a.age = 1 }
       expect(a.name).to eq('a name')
       expect(a.age).to eq(1)
     end
@@ -60,11 +60,11 @@ describe 'Attributes' do
   it_can_include_and_inherit 'AttributeSpec4' do
     context 'String Arguments' do
       AttributeSpec4.class_eval do
-        lr_attr_accessor 'name', 'age'
+        attr_accessor 'name', 'age'
       end
 
       it 'functions the same when passed strings as arguments' do
-        a = AttributeSpec2.new(name: 'a name') { |a| a.age = 1 }
+        a = AttributeSpec4.new(name: 'a name') { |a| a.age = 1 }
         expect(a.name).to eq('a name')
         expect(a.age).to eq(1)
       end
