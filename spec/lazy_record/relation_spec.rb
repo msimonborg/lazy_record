@@ -3,19 +3,19 @@
 describe 'Relations' do
   it_can_include_and_inherit 'Member' do
     it 'can create a Relation bound to the Member class' do
-      r = LazyRecord::Relation.new(model: Member)
+      rel = LazyRecord::Relation.new(model: Member)
 
-      expect(r.model).to eq(Member)
+      expect(rel.model).to eq(Member)
     end
 
     it 'Member instances can be added to a MemberRelation' do
-      r = LazyRecord::Relation.new(model: Member).tap do |r|
+      rel = LazyRecord::Relation.new(model: Member).tap do |r|
         10.times { r << Member.new }
       end
 
-      expect(r.count).to eq(10)
-      expect(r.first).to be_a(Member)
-      expect(r.last).to be_a(Member)
+      expect(rel.count).to eq(10)
+      expect(rel.first).to be_a(Member)
+      expect(rel.last).to be_a(Member)
     end
 
     it 'raises an error when a non-Member is added to the relation' do
@@ -25,11 +25,11 @@ describe 'Relations' do
     it 'can be initialized with an array' do
       members = []
       10.times { members << Member.new }
-      r = LazyRecord::Relation.new(model: Member, array: members)
+      rel = LazyRecord::Relation.new(model: Member, array: members)
 
-      expect(r.count).to eq(10)
-      expect(r.first).to be_a(Member)
-      expect(r.last).to be_a(Member)
+      expect(rel.count).to eq(10)
+      expect(rel.first).to be_a(Member)
+      expect(rel.last).to be_a(Member)
     end
 
     it 'raises an error if initialized with an array of non-Members' do
