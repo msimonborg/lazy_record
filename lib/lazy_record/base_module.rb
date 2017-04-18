@@ -18,8 +18,6 @@ module LazyRecord
       base.extend DynamicModules
     end
 
-    attr_writer :id
-
     # Use options hash to set attributes, and/or operate on object in a block.
     # Checks each options key for a matching attribute setter method.
     def initialize(opts = {})
@@ -46,20 +44,17 @@ module LazyRecord
     end
 
     def inspect
-      format('#<%s id: %s%s%s%s>',
+      format('#<%s %s>',
              self.class,
-             display_id_even_if_nil,
-             public_attr_readers_to_s.dup.unshift('').join(', '),
-             associations_to_s.unshift('').join(', '),
-             collection_counts_to_s.unshift('').join(', '))
+             displayable_attributes.join(', '))
     end
 
-    def display_id_even_if_nil
-      id ? id.to_s : 'nil'
-    end
-
-    def id
-      @id.freeze
+    def displayable_attributes
+      [
+        public_attr_readers_to_s.dup,
+        associations_to_s.dup,
+        collection_counts_to_s.dup
+      ].flatten
     end
 
     def stringify_value(value)
@@ -72,9 +67,7 @@ module LazyRecord
       end
     end
 
-    private :id=,
-            :display_id_even_if_nil,
-            :stringify_value,
+    private :stringify_value,
             :public_attr_readers_to_s,
             :collection_counts_to_s
 

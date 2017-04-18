@@ -8,26 +8,18 @@ class CallbacksTest
     attr_reader :all
     define_method :count { @all.count }
   end
-  define_method :initialize { |opts = {}, &block| }
+  define_method :initialize { |_opts = {}, &block| }
 end
 
 describe 'Callbacks' do
-  it 'adds an auto-incrementing ID to new instances' do
+  it 'adds a Relation object of new instances to #all class method' do
     c1 = CallbacksTest.new
     c2 = CallbacksTest.new
 
-    expect(c1.id).to eq(1)
-    expect(c2.id).to eq(2)
-  end
-
-  it 'adds a Relation object of new instances to #all class method' do
-    c3 = CallbacksTest.new
-    c4 = CallbacksTest.new
-
     expect(CallbacksTest.all).to be_a(LazyRecord::Relation)
-    expect(CallbacksTest.count).to eq(4)
-    expect(CallbacksTest.all).to include(c3)
-    expect(CallbacksTest.all).to include(c4)
+    expect(CallbacksTest.count).to eq(2)
+    expect(CallbacksTest.all).to include(c1)
+    expect(CallbacksTest.all).to include(c2)
   end
 
   context 'checks for validations' do

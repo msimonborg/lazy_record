@@ -11,17 +11,7 @@ module LazyRecord
       if instance.respond_to?(:validation)
         instance = instance.validation(*@validations)
       end
-      add_id(instance)
+      instance.tap { |inst| all << inst if inst }
     end
-
-    def add_id(instance)
-      if instance
-        all << instance
-        instance.send(:id=, count)
-      end
-      instance
-    end
-
-    private :add_id
   end
 end
