@@ -1,4 +1,5 @@
 # LazyRecord
+[![Gem Version](https://badge.fury.io/rb/lazy_record.svg)](https://badge.fury.io/rb/lazy_record)
 [![Code Climate](https://codeclimate.com/github/msimonborg/lazy_record/badges/gpa.svg)](https://codeclimate.com/github/msimonborg/lazy_record)
 [![Build Status](https://travis-ci.org/msimonborg/lazy_record.svg?branch=master)](https://travis-ci.org/msimonborg/lazy_record)
 [![Coverage Status](https://coveralls.io/repos/github/msimonborg/lazy_record/badge.svg?branch=master)](https://coveralls.io/github/msimonborg/lazy_record?branch=master)
