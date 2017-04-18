@@ -1,5 +1,7 @@
 # LazyRecord
 [![Code Climate](https://codeclimate.com/github/msimonborg/lazy_record/badges/gpa.svg)](https://codeclimate.com/github/msimonborg/lazy_record)
+[![Build Status](https://travis-ci.org/msimonborg/lazy_record.svg?branch=master)](https://travis-ci.org/msimonborg/lazy_record)
+[![Coverage Status](https://coveralls.io/repos/github/msimonborg/lazy_record/badge.svg?branch=master)](https://coveralls.io/github/msimonborg/lazy_record?branch=master)
 
 LazyRecord writes a bunch of boilerplate code for your POROs, similarly to what you'd expect ActiveRecord to do for your database-backed objects. This project is an attempt to understand and explore dynamic programming techniques in Ruby, and demystify some of the Rails magic. Maybe someone will find it useful.
 
@@ -51,7 +53,7 @@ Use `attr_accessor` like you would use normally, and you'll get hash syntax in y
 class Thing < LazyRecord::Base
   attr_accessor :stuff, :junk
   attr_reader :hmm
-  
+
   def something
     @something ||= 'something'
   end
@@ -69,10 +71,10 @@ If you want to define private or protected `attr_accessor`s or `attr_reader`s, t
 class Thing < LazyRecord::Base
   attr_accessor :stuff, :junk
   private :junk, :junk= # passing the setter and getter method names as arguments to Module.private/Module.protected will work
-  
+
   private_attr_accessor :hmm # this also works
   protected_attr_accessor :huh # this works too
-  
+
   private
   attr_accessor :what # declaring the methods after calling the private method will not work, and the methods will be public and visible.
                       # this is a bug due to the custom implementation of .attr_*, and if anyone can find a fix please submit it!
