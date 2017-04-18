@@ -34,8 +34,8 @@ class Person < LazyRecord::Base
     puts "There are #{people.size} people!" if opts[:count] == true
 
     if opts[:dog]
-      people.each do |prsn|
-        prsn.adopt_a_dog(opts[:dog]) { |d| d.name = "#{prsn.name}'s best friend" }
+      people.each do |pn|
+        pn.adopt_a_dog(opts[:dog]) { |d| d.name = "#{pn.name}'s best friend" }
       end
     end
 

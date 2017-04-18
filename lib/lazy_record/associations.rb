@@ -41,8 +41,8 @@ module LazyRecord
 
     def define_association_setter(assoc)
       model = find_scoped_association_class(assoc)
-      define_method("#{assoc}=") do |value|
-        return instance_variable_set("@#{assoc}", value) if value.is_a? model.call
+      define_method("#{assoc}=") do |val|
+        return instance_variable_set("@#{assoc}", val) if val.is_a? model.call
         raise ArgumentError, "Argument must be a #{model.call}"
       end
     end

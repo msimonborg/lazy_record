@@ -26,8 +26,8 @@ describe 'Base' do
     end
 
     it 'can forget about all of its instances' do
-      b1 = BaseSpec.new
-      b2 = BaseSpec.new
+      BaseSpec.new
+      BaseSpec.new
 
       BaseSpec.destroy_all
       expect(BaseSpec.count).to eq(0)

@@ -8,9 +8,10 @@ module LazyRecord
   # #initialize just call super.
   module Attributes
     def lr_attr_accessor(*names) # Will be removed in version 1.0.0
-      puts 'Using `.lr_attr_accessor` is deprecated. Use the standard `.attr_*`'\
-      ' methods instead. You will get the same results, plus the methods will be'\
-      ' recognized by rdoc. `.lr_attr_accessor` will be removed in version 1.0.0'
+      puts 'Using `.lr_attr_accessor` is deprecated. Use the standard '\
+      '`.attr_*` methods instead. You will get the same results, plus '\
+      'the methods will be recognized by rdoc. `.lr_attr_accessor` will'\
+      ' be removed in version 1.0.0'
       attr_accessor(*names)
     end
 

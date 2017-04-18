@@ -23,9 +23,8 @@ module LazyRecord
     def define_collection_setter(collection)
       model = find_scoped_collection_class(collection)
       define_method("#{collection}=") do |coll|
-        coll = Relation.new(model: model, array: coll) if coll.is_a?(Array)
-        return instance_variable_set("@#{collection}", coll) if coll.is_a? Relation
-        raise ArgumentError, "Argument must be a collection of #{collection}"
+        coll = Relation.new(model: model, array: coll)
+        instance_variable_set("@#{collection}", coll)
       end
     end
 
