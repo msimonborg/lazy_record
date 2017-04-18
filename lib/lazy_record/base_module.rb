@@ -27,6 +27,47 @@ module LazyRecord
       yield self if block_given?
     end
 
+    def inspect
+      format('#<%s%s>',
+             self.class,
+             displayable_attributes.join(', '))
+    end
+
+    def associations
+      []
+    end
+
+    def collections
+      []
+    end
+
+    def ==(other)
+      conditions = set_equality_conditions
+      return false if !other.is_a?(self.class) || conditions.empty?
+      conditions.all? { |attr| send(attr) == other.send(attr) }
+    end
+
+    def ===(other)
+      conditions = set_equality_conditions
+      return false if !other.is_a?(self.class) || conditions.empty?
+      # rubocop:disable Style/CaseEquality
+      conditions.all? { |attr| send(attr) === other.send(attr) }
+      # rubocop:enable Style/CaseEquality
+    end
+
+    def hash
+      conditions = set_equality_conditions
+      hash = {}
+      conditions.each { |attr| hash[attr] = send(attr) }
+      hash.hash
+    end
+
+    alias eql? ==
+
+    def set_equality_conditions
+      self.class.send(:attr_readers) + associations
+    end
+
     def collection_counts_to_s
       []
     end
@@ -41,12 +82,6 @@ module LazyRecord
 
     def associations_to_s
       []
-    end
-
-    def inspect
-      format('#<%s%s>',
-             self.class,
-             displayable_attributes.join(', '))
     end
 
     def displayable_attributes
@@ -72,7 +107,9 @@ module LazyRecord
     private :displayable_attributes,
             :stringify_value,
             :public_attr_readers_to_s,
-            :collection_counts_to_s
+            :collection_counts_to_s,
+            :associations_to_s,
+            :set_equality_conditions
 
     # Class methods provided to all LazyRecord classes
     module ClassMethods

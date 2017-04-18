@@ -37,8 +37,6 @@ module LazyRecord
           select_by_hash_condition(condition, instance)
         elsif block_given?
           yield instance
-        elsif condition
-          eval "instance.#{condition}"
         end
       end
       self.class.new(model: model, array: result)
@@ -71,7 +69,7 @@ module LazyRecord
       all.clear
     end
 
-    private :clear, :all
+    private :clear, :all, :select_by_hash_condition
 
     def self_extend_scopes_module
       return unless model.const_defined?(Scopes::SCOPE_MODULE_NAME,

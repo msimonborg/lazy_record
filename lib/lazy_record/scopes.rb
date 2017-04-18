@@ -7,8 +7,9 @@ module LazyRecord
 
     def lr_scope(method_name, lambda)
       extend mod = get_or_set_mod(SCOPE_MODULE_NAME)
+
       mod.module_eval do
-        send(:define_method, method_name, &lambda)
+        define_method(method_name, &lambda)
       end
     end
   end

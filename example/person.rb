@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Example class
 class Person < LazyRecord::Base
   attr_accessor :name, :age, :haircut
@@ -10,13 +11,13 @@ class Person < LazyRecord::Base
     opts[:dog] = {} unless opts[:dog]
     new(opts) { |p| p.adopt_a_dog(opts[:dog]) }
   }
-  lr_scope :young, -> { where('age < 30') }
+  lr_scope :young, -> { where { |x| x.age < 30 } }
   lr_scope :old, -> { where { |x| x.age > 30 } }
   lr_scope :short_hair, -> { where(haircut: 'short') }
 
-  lr_method :speak, ->(string) { puts string }
-  lr_method :add_dog, :name, 'dogs << Dog.new(name: name)'
-  lr_method :introduce_yourself, 'puts "Hello, my name is #{name}"'
+  lr_method :speak, ->(_x, string) { puts string }
+  lr_method :add_dog, ->(x, name) { x.dogs << Dog.new(name: name) }
+  lr_method :introduce_yourself, ->(x) { puts "Hello, my name is #{x.name}" }
 
   lr_validates :name, :age, presence: true
 

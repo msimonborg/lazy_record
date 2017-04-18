@@ -3,3 +3,6 @@ Metrics/LineLength:
   Exclude:
     - 'lazy_record.gemspec'
     - 'spec/spec_helper.rb'
+
+Lint/AmbiguousBlockAssociation:
+  Enabled: false

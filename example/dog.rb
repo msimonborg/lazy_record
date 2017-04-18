@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # Example class
 class Dog < LazyRecord::Base
   attr_accessor :name, :breed, :weight

@@ -49,8 +49,8 @@ describe 'Base' do
 
       expect(BaseSpec.where(id: 2).class).to eq(LazyRecord::Relation)
       expect(BaseSpec.where(id: 2).first).to eq(b2)
-      expect(BaseSpec.where('id')).to include(b1)
-      expect(BaseSpec.where('id')).to include(b2)
+      expect(BaseSpec.where(&:id)).to include(b1)
+      expect(BaseSpec.where(&:id)).to include(b2)
     end
 
     it 'has a formatted return for #inspect' do

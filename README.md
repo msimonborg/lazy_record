@@ -123,13 +123,13 @@ thing.whatevers
 # => #<WhateverRelation [#<Whatever>]>
 ```
 
-Use `lr_scope` and `#where` to create class scope methods and query objects. Works just like ActiveRecord scopes, including scope chaining. Only since it is all Ruby and no SQL, use `==` as the comparison operator.
+Use `lr_scope` and `#where` to create class scope methods and query objects.
 
 ```ruby
 class Whatever < LazyRecord::Base
   attr_accessor :party_value, :sleepy_value
-  lr_scope :big_party, -> { where('party_value > 10') }
-  lr_scope :low_sleepy, -> { where('sleepy_value < 10') }
+  lr_scope :big_party, -> { where { |w| w.party_value > 10 } }
+  lr_scope :low_sleepy, -> { where { |w| w.sleepy_value < 10 } }
 end
 
 class Thing < LazyRecord::Base
@@ -160,7 +160,7 @@ thing.whatevers.big_party.low_sleepy
 Whatever.low_sleepy
 # => #<WhateverRelation [#<Whatever party_value: 13, sleepy_value: 3>, #<Whatever id: 4, party_value: 3, sleepy_value: 5>]>
 
-Whatever.where('party_value == 12')
+Whatever.where party_value: 12
 # => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>
 ```
 You can also use hash syntax and block syntax with `.where`. Block syntax will yield each object in the collection to the block for evaluation.
@@ -180,33 +180,29 @@ num = 6
 Whatever.where party_value: -> { num * 2 }
 # => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>]>
 ```
-Use `lr_method` for an alternative API for defining short instance methods. Can use lambda syntax or string syntax. Best for quick one-liners. If the method references `self` of the instance, either explicitly or implicitly, it needs to use the string syntax, since anything passed into the lambda will be evaluated in the context of the Class level scope.
+Use `lr_method` for an alternative API for defining short instance methods using lambda syntax. The first argument passed to the block must be the receiver of the method, or `self` in the method scope.
 
 ```ruby
 class Whatever < LazyRecord::Base
   attr_accessor :party_value, :sleepy_value, :right
-  lr_scope :big_party, -> { where('party_value > 10') }
-  lr_scope :low_sleepy, -> { where('sleepy_value < 10') }
+  lr_scope :big_party, -> { where { |w| w.party_value > 10 } }
+  lr_scope :low_sleepy, -> { where { |w| w.sleepy_value < 10 } }
 end
 
 class Thing < LazyRecord::Base
   attr_accessor :stuff, :junk
   lr_validates :stuff, presence: true
   lr_has_many :whatevers
-  lr_method :speak, -> (string) { puts string }
-  lr_method :add_whatever, 'right', 'whatevers << Whatever.new(right: right)'
+  lr_method :speak, -> (_x, string) { puts string }
+  lr_method :what_am_i, ->(x) { "I'm a #{x.class}" }
 end
 
 thing = Thing.new stuff: 'stuff'
 thing.speak "I'm a thing"
 # I'm a thing
 # => nil
-
-thing.add_whatever(true)
-# => [#<Whatever party_value: nil, sleepy_value: nil, right: true>]
-
-thing.whatevers
-# => #<WhateverRelation [#<Whatever party_value: nil, sleepy_value: nil, right: true>]>
+thing.what_am_i
+# => "I'm a Thing"
 ```
 
 ## Development

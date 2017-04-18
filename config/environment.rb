@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 example = File.expand_path('../../example', __FILE__)
 $LOAD_PATH.unshift(example) unless $LOAD_PATH.include?(example)
 lib = File.expand_path('../lib', __FILE__)
