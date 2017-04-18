@@ -2,13 +2,11 @@
 
 class CallbacksTest
   extend LazyRecord::Callbacks
-  attr_accessor :id
-  private :id=
   class << self
     attr_reader :all
-    define_method :count { @all.count }
+    define_method(:count) { @all.count }
   end
-  define_method :initialize { |_opts = {}, &block| }
+  define_method(:initialize) { |_opts = {}, &block| }
 end
 
 describe 'Callbacks' do
