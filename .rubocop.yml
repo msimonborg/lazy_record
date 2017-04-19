@@ -14,3 +14,7 @@ Metrics/BlockLength:
 Security/Eval:
   Exclude:
     - 'spec/spec_helper.rb'
+
+
+AllCops:
+  TargetRubyVersion: 2.4.1
