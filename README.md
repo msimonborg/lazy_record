@@ -207,6 +207,16 @@ thing.speak "I'm a thing"
 thing.what_am_i
 # => "I'm a Thing"
 ```
+## Platform support
+
+Tested against:
+* MRI 2.3.0
+* MRI 2.3.4
+* MRI 2.4.1
+* JRuby 9.1.6.0
+* Rubinius 3.74
+* JRuby HEAD
+* MRI HEAD
 
 ## Development
 
