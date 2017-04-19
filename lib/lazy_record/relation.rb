@@ -24,7 +24,7 @@ module LazyRecord
     def <<(other)
       message = "object must be of type #{model}"
       raise ArgumentError, message unless other.is_a?(model)
-      all << other
+      all << other unless all.include?(other)
     end
 
     def inspect

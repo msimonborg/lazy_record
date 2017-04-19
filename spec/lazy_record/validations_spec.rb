@@ -7,6 +7,10 @@ describe 'Validations' do
       lr_validates :name, presence: true
     end
 
+    before :each do
+      ValidationSpec1.destroy_all
+    end
+
     it 'validates the right attributes and returns false when invalid' do
       valid = ValidationSpec1.new(name: 'v name')
       invalid = ValidationSpec1.new(age: 1)
