@@ -17,3 +17,8 @@ Metrics/BlockLength:
 Security/Eval:
   Exclude:
     - 'spec/spec_helper.rb'
+
+Style/PercentLiteralDelimiters:
+  PreferredDelimiters:
+    '%i': '[]'
+    '%w': '[]'
