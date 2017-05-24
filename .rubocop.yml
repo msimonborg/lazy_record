@@ -1,3 +1,6 @@
+AllCops:
+  TargetRubyVersion: 2.4
+
 Metrics/LineLength:
   Exclude:
     - 'lazy_record.gemspec'
@@ -14,7 +17,3 @@ Metrics/BlockLength:
 Security/Eval:
   Exclude:
     - 'spec/spec_helper.rb'
-
-
-AllCops:
-  TargetRubyVersion: 2.4.1
