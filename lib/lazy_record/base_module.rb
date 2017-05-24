@@ -42,17 +42,17 @@ module LazyRecord
     end
 
     def ==(other)
-      conditions = set_equality_conditions
-      return false if !other.is_a?(self.class) || conditions.empty?
-      conditions.all? { |attr| send(attr) == other.send(attr) }
+      compare(other, :==)
     end
 
     def ===(other)
+      compare(other, :===)
+    end
+
+    def compare(other, operator)
       conditions = set_equality_conditions
       return false if !other.is_a?(self.class) || conditions.empty?
-      # rubocop:disable Style/CaseEquality
-      conditions.all? { |attr| send(attr) === other.send(attr) }
-      # rubocop:enable Style/CaseEquality
+      conditions.all? { |attr| send(attr).send(operator, other.send(attr)) }
     end
 
     def hash
