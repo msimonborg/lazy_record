@@ -73,11 +73,10 @@ module LazyRecord
     end
 
     def public_attr_readers_to_s
-      @public_attr_readers_to_s ||=
-        self.class.send(:public_attr_readers).map do |attr|
-          value = send(attr)
-          "#{attr}: #{stringify_value(value)}"
-        end
+      self.class.send(:public_attr_readers).map do |attr|
+        value = send(attr)
+        "#{attr}: #{stringify_value(value)}"
+      end
     end
 
     def associations_to_s
