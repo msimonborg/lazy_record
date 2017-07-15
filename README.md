@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/msimonborg/lazy_record.svg?branch=master)](https://travis-ci.org/msimonborg/lazy_record)
 [![Coverage Status](https://coveralls.io/repos/github/msimonborg/lazy_record/badge.svg?branch=master)](https://coveralls.io/github/msimonborg/lazy_record?branch=master)
 
-LazyRecord writes a bunch of boilerplate code for your POROs, similarly to what you'd expect ActiveRecord to do for your database-backed objects. This project is an attempt to understand and explore dynamic programming techniques in Ruby, and demystify some of the Rails magic. Maybe someone will find it useful.
+LazyRecord writes a bunch of boilerplate code for your POROs, similarly to what you'd expect ActiveRecord to do for your database-backed objects. The main use case is for working with objects returned by external APIs. This gem can be added as a dependency to your ruby API wrapper to easily enhance your gem's public API. See [PYR](https://github.com/msimonborg/pyr) as an example.
 
 ## Installation
 
@@ -35,7 +35,7 @@ thing = Thing.new { |t| puts t.class.superclass }
 # => #<Thing>
 ```
 
-Alternatively, if you want to inherit from another class, you can mix in the `LazyRecord::BaseModule` and get all the same results.
+Alternatively, if you want to inherit from another class, you can mix in the `LazyRecord::BaseModule` and get all the same features.
 
 ```ruby
 class Thing
@@ -46,7 +46,6 @@ thing = Thing.new { |t| puts t.class.superclass }
 # Object
 # => #<Thing>
 ```
-Every LazyRecord object is assigned an auto-incrementing ID after initialization. IDs reset when the program is terminated.
 
 Use `attr_accessor` like you would use normally, and you'll get hash syntax in your `#intialize` method for attribute setting. The attributes will also be visible when the object is returned or `inspected`. Attributes defined with `attr_reader` will also be visible, but `attr_writers`, custom getters and writers, and other methods will not.
 
