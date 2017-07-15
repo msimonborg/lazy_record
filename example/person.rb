@@ -8,23 +8,18 @@ class Person < LazyRecord::Base
   lr_accepts_nested_attributes_for :dogs, :cats
 
   lr_scope :new_with_dog, lambda { |opts = {}|
-    opts[:dog] = {} unless opts[:dog]
-    new(opts) { |p| p.adopt_a_dog(opts[:dog]) }
+    dog = opts.fetch(:dog) { {} }
+    new(opts) { |p| p.adopt_a_dog(dog) }
   }
-  lr_scope :young, -> { where { |x| x.age < 30 } }
-  lr_scope :old, -> { where { |x| x.age > 30 } }
+  lr_scope :young, -> { where { |obj| obj.age < 30 } }
+  lr_scope :old, -> { where { |obj| obj.age > 30 } }
   lr_scope :short_hair, -> { where(haircut: 'short') }
 
-  lr_method :speak, ->(_x, string) { puts string }
-  lr_method :add_dog, ->(x, name) { x.dogs << Dog.new(name: name) }
-  lr_method :introduce_yourself, ->(x) { puts "Hello, my name is #{x.name}" }
+  lr_method :speak, ->(obj, phrase) { "#{obj.name}: '#{phrase}'" }
+  lr_method :add_dog, ->(obj, name) { obj.dogs << Dog.new(name: name) }
+  lr_method :introduction, ->(obj) { puts "Hello, my name is #{obj.name}" }
 
   lr_validates :name, :age, presence: true
-
-  def self.new(opts = {})
-    puts 'hi'
-    super
-  end
 
   def self.make_people(*args)
     opts = args.extract_options!
@@ -40,19 +35,6 @@ class Person < LazyRecord::Base
     end
 
     people.tap { |person| yield person } if block_given?
-  end
-
-  def times(num)
-    if block_given?
-      i = 0
-      while i < num
-        yield
-        i += 1
-      end
-      i
-    else
-      self
-    end
   end
 
   def adopt_a_dog(opts = {})
