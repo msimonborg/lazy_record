@@ -4,18 +4,23 @@ module LazyRecord
   # This module gives the Base class its functionality, and can be included
   # in any class as an alternative to inheriting from LazyRecord::Base
   module BaseModule
+    # Modules that compose the functionality of the LazyRecord API
+    LAZY_RECORD_MODULES = [
+      ScopedAttrAccessor,
+      LazyRecord::ClassMethods,
+      LazyRecord::Scopes,
+      LazyRecord::Attributes,
+      LazyRecord::Collections,
+      LazyRecord::Associations,
+      LazyRecord::Callbacks,
+      LazyRecord::Validations,
+      LazyRecord::Methods,
+      LazyRecord::DynamicModules
+    ].freeze
+
     # Extend these modules when BaseModule is included
     def self.included(base)
-      base.extend ScopedAttrAccessor
-      base.extend ClassMethods
-      base.extend Scopes
-      base.extend Attributes
-      base.extend Collections
-      base.extend Associations
-      base.extend Callbacks
-      base.extend Validations
-      base.extend Methods
-      base.extend DynamicModules
+      LAZY_RECORD_MODULES.each { |mod| base.extend mod }
     end
 
     # Use options hash to set attributes, and/or operate on object in a block.
@@ -109,42 +114,5 @@ module LazyRecord
             :collection_counts_to_s,
             :associations_to_s,
             :set_equality_conditions
-
-    # Class methods provided to all LazyRecord classes
-    module ClassMethods
-      def public_attr_readers
-        @public_attr_readers ||= attr_readers.reject do |reader|
-          private_method_defined?(reader) || protected_method_defined?(reader)
-        end
-      end
-
-      def attr_readers
-        @attr_readers ||= []
-      end
-
-      def all
-        @all ||= Relation.new(model: self)
-      end
-
-      def count
-        all.count
-      end
-
-      def first
-        all.first
-      end
-
-      def last
-        all.last
-      end
-
-      def where(condition = nil, &block)
-        all.where(condition, &block)
-      end
-
-      def destroy_all
-        all.send(:clear)
-      end
-    end
   end
 end
