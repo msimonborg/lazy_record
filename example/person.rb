@@ -15,9 +15,10 @@ class Person < LazyRecord::Base
   lr_scope :old, -> { where { |obj| obj.age > 30 } }
   lr_scope :short_hair, -> { where(haircut: 'short') }
 
-  lr_method :speak, ->(obj, phrase) { "#{obj.name}: '#{phrase}'" }
-  lr_method :add_dog, ->(obj, name) { obj.dogs << Dog.new(name: name) }
-  lr_method :introduction, ->(obj) { puts "Hello, my name is #{obj.name}" }
+  lr_method :speak, ->(phrase) { "#{name}: '#{phrase}'" }
+  lr_method :add_dog, ->(name) { dogs << Dog.new(name: name) }
+  lr_method :introduction, -> { puts "Hello, my name is #{name}" }
+  lr_method :say_hi, -> { "Hi from #{self}" }
 
   lr_validates :name, :age, presence: true
 
