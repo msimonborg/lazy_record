@@ -88,12 +88,12 @@ RSpec.configure do |config|
   #   # Many RSpec users commonly either run the entire suite or an individual
   #   # file, and it's useful to allow more verbose output when running an
   #   # individual spec file.
-  #   if config.files_to_run.one?
-  #     # Use the documentation formatter for detailed output,
-  #     # unless a formatter has already been configured
-  #     # (e.g. via a command-line flag).
-  config.default_formatter = 'doc'
-  #   end
+  if config.files_to_run.one?
+    # Use the documentation formatter for detailed output,
+    # unless a formatter has already been configured
+    # (e.g. via a command-line flag).
+    config.default_formatter = 'doc'
+  end
   #
   #   # Print the 10 slowest examples and example groups at the
   #   # end of the spec run, to help surface which specs are running
@@ -104,7 +104,7 @@ RSpec.configure do |config|
   #   # order dependency and want to debug it, you can fix the order by providing
   #   # the seed, which is printed after each run.
   #   #     --seed 1234
-  #   config.order = :random
+  config.order = :random
   #
   #   # Seed global randomization in this process using the `--seed` CLI option.
   #   # Setting this allows you to use `--seed` to deterministically reproduce
@@ -114,25 +114,25 @@ RSpec.configure do |config|
 end
 
 module IncludeAndInherit
-  def it_can_include_and_inherit(*klasses, &block)
-    it_includes_lazy_record_base_module(*klasses, &block)
-    it_inherits_directly_from_lazy_record_base(*klasses, &block)
+  def it_can_include_and_inherit(*classes, &block)
+    it_includes_lazy_record_base_module(*classes, &block)
+    it_inherits_directly_from_lazy_record_base(*classes, &block)
   end
 
-  def it_includes_lazy_record_base_module(*klasses, &block)
+  def it_includes_lazy_record_base_module(*classes, &block)
     context 'included in custom Base class' do
-      klasses.each do |klass|
-        eval("::#{klass} = Class.new")
-        eval("::#{klass}.include(LazyRecord::BaseModule)")
+      classes.each do |klass|
+        cls = Object.const_set(klass, Class.new)
+        cls.include(LazyRecord::BaseModule)
       end
       module_eval(&block)
     end
   end
 
-  def it_inherits_directly_from_lazy_record_base(*klasses, &block)
+  def it_inherits_directly_from_lazy_record_base(*classes, &block)
     context 'inherited directly from LazyRecord::Base' do
-      klasses.each do |klass|
-        eval("::#{klass} = Class.new(LazyRecord::Base)")
+      classes.each do |klass|
+        Object.const_set(klass, Class.new(LazyRecord::Base))
       end
       module_eval(&block)
     end

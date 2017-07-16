@@ -1,17 +1,13 @@
 # frozen_string_literal: true
 
-require 'lazy_record/nesting'
-
 module LazyRecord
   # Set up in-memory one-to-many relationships between objects
   module Collections
-    include LazyRecord::Nesting
-
     COLLECTION_MODULE_NAME   = :Collections
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
     def define_collection_getter(collection)
-      klass = find_scoped_collection_class(collection)
+      klass = const_get(collection.to_s.classify)
       define_method(collection) do
         if instance_variable_get("@#{collection}").nil?
           instance_variable_set("@#{collection}", Relation.new(klass: klass))
@@ -21,15 +17,11 @@ module LazyRecord
     end
 
     def define_collection_setter(collection)
-      klass = find_scoped_collection_class(collection)
+      klass = const_get(collection.to_s.classify)
       define_method("#{collection}=") do |coll|
         coll = Relation.new(klass: klass, collection: coll)
         instance_variable_set("@#{collection}", coll)
       end
-    end
-
-    def find_scoped_collection_class(collection)
-      -> { apply_nesting(collection.to_s.classify).constantize }
     end
 
     def define_collection_counter(collection)
