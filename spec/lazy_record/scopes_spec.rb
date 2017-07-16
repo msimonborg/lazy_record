@@ -10,9 +10,9 @@ describe LazyRecord::Scopes do
       lr_scope :attr_two_eql, ->(val) { where attr_two: val }
     end
 
-    let! :one { ScopesSpec.new(attr_one: 1, attr_two: 1) }
-    let! :two { ScopesSpec.new(attr_one: 2, attr_two: 2) }
-    let! :one_and_two { ScopesSpec.new(attr_one: 1, attr_two: 2) }
+    let!(:one) { ScopesSpec.new(attr_one: 1, attr_two: 1) }
+    let!(:two) { ScopesSpec.new(attr_one: 2, attr_two: 2) }
+    let!(:one_and_two) { ScopesSpec.new(attr_one: 1, attr_two: 2) }
 
     it 'returns a LazyRecord::Relation instance' do
       expect(ScopesSpec.attr_one_eql_one).to be_a LazyRecord::Relation
