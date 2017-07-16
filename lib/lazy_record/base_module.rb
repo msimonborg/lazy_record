@@ -6,20 +6,20 @@ module LazyRecord
   module BaseModule
     # Modules that compose the functionality of the LazyRecord API
     LAZY_RECORD_MODULES = [
-      ScopedAttrAccessor,
-      LazyRecord::ClassMethods,
-      LazyRecord::Scopes,
-      LazyRecord::Attributes,
-      LazyRecord::Collections,
-      LazyRecord::Associations,
-      LazyRecord::Callbacks,
-      LazyRecord::Validations,
-      LazyRecord::Methods,
-      LazyRecord::DynamicModules
+      ClassMethods,
+      Scopes,
+      Attributes,
+      Collections,
+      Associations,
+      Callbacks,
+      Validations,
+      Methods,
+      DynamicModules
     ].freeze
 
     # Extend these modules when BaseModule is included
     def self.included(base)
+      base.extend ScopedAttrAccessor
       LAZY_RECORD_MODULES.each { |mod| base.extend mod }
     end
 
@@ -36,6 +36,10 @@ module LazyRecord
       format('#<%s%s>',
              self.class,
              displayable_attributes.join(', '))
+    end
+
+    def to_s
+      inspect
     end
 
     def associations

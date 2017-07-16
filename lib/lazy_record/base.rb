@@ -8,6 +8,6 @@ module LazyRecord
   # method generating macros, scope methods and scope chaining, associations
   # with other objects, and validations. This is a WIP still in development.
   class Base
-    include BaseModule
+    include LazyRecord::BaseModule
   end
 end
