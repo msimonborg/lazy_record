@@ -22,13 +22,12 @@ describe 'Base' do
     end
 
     it 'responds to .all and returns a Relation of all instances' do
-      expect(BaseSpec).to respond_to(:all)
       expect(BaseSpec.all.class).to be(LazyRecord::Relation)
       expect(BaseSpec.all).to include(@b1)
       expect(BaseSpec.all).to include(@b2)
     end
 
-    it 'does not remember duplicate objects' do
+    it 'treats duplicate objects as the same' do
       expect(BaseSpec.count).to eq(2)
 
       other_b1 = BaseSpec.new id: 1
