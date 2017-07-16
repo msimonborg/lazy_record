@@ -14,7 +14,7 @@ module LazyRecord
     end
 
     def all
-      @all ||= Relation.new(model: self)
+      @all ||= Relation.new(klass: self)
     end
 
     def count

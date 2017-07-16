@@ -6,29 +6,37 @@ module LazyRecord
   class Relation
     include Enumerable
 
-    attr_reader :model, :all
+    attr_reader :klass, :all
 
-    def initialize(model:, array: nil)
-      model = model.call if model.is_a? Proc
-      raise ArgumentError, 'model must be a class' unless model.is_a?(Class)
-      @model = model
+    def initialize(klass:, collection: [])
+      klass = klass.call if klass.is_a? Proc
+      klass_argument_error unless klass.is_a?(Class)
+      @klass = klass
       @all   = []
       self_extend_scopes_module
-      array&.each do |object|
-        @all << object && next if object.is_a?(model)
-        message = "Argument must be a collection of #{model.to_s.tableize}"
-        raise ArgumentError, message
+      collection.each do |object|
+        @all << object && next if object.is_a?(klass)
+        collection_argument_error
       end
     end
 
+    def collection_argument_error
+      message = "Argument must be a collection of #{klass.to_s.tableize}"
+      raise ArgumentError, message
+    end
+
+    def klass_argument_error
+      raise ArgumentError, '`klass` keyword argument must be a class'
+    end
+
     def <<(other)
-      message = "object must be of type #{model}"
-      raise ArgumentError, message unless other.is_a?(model)
+      message = "object must be of type #{klass}"
+      raise ArgumentError, message unless other.is_a?(klass)
       all << other unless all.include?(other)
     end
 
     def inspect
-      "\#<#{model}Relation [#{all.map(&:inspect).join(', ')}]>"
+      "\#<#{klass}Relation [#{all.map(&:inspect).join(', ')}]>"
     end
 
     def where(condition = nil)
@@ -39,7 +47,7 @@ module LazyRecord
           yield instance
         end
       end
-      self.class.new(model: model, array: result)
+      self.class.new(klass: klass, collection: result)
     end
 
     def select_by_hash_condition(condition, instance)
@@ -72,9 +80,9 @@ module LazyRecord
     private :clear, :all, :select_by_hash_condition
 
     def self_extend_scopes_module
-      return unless model.const_defined?(Scopes::SCOPE_MODULE_NAME,
+      return unless klass.const_defined?(Scopes::SCOPE_MODULE_NAME,
                                          _search_ancestors = false)
-      extend(model.const_get(Scopes::SCOPE_MODULE_NAME))
+      extend(klass.const_get(Scopes::SCOPE_MODULE_NAME))
     end
   end
 end

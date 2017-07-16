@@ -6,7 +6,7 @@ module LazyRecord
   # After #initialize callbacks for validations and setting object id.
   module Callbacks
     def new(opts = {})
-      @all ||= Relation.new(model: self)
+      @all ||= Relation.new(klass: self)
       instance = super(opts)
       if instance.respond_to?(:validation)
         instance = instance.validation(*@validations)

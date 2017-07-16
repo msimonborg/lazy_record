@@ -11,19 +11,19 @@ module LazyRecord
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
     def define_collection_getter(collection)
-      model = find_scoped_collection_class(collection)
+      klass = find_scoped_collection_class(collection)
       define_method(collection) do
         if instance_variable_get("@#{collection}").nil?
-          instance_variable_set("@#{collection}", Relation.new(model: model))
+          instance_variable_set("@#{collection}", Relation.new(klass: klass))
         end
         instance_variable_get("@#{collection}")
       end
     end
 
     def define_collection_setter(collection)
-      model = find_scoped_collection_class(collection)
+      klass = find_scoped_collection_class(collection)
       define_method("#{collection}=") do |coll|
-        coll = Relation.new(model: model, array: coll)
+        coll = Relation.new(klass: klass, collection: coll)
         instance_variable_set("@#{collection}", coll)
       end
     end

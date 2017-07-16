@@ -14,7 +14,7 @@ describe 'Collections' do
     end
 
     it 'the Relation is bound to the Child class' do
-      expect(Parent.new.children.model).to eq(Child)
+      expect(Parent.new.children.klass).to eq(Child)
     end
 
     it 'can set #children as a collection of children' do
