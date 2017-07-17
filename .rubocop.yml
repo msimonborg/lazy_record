@@ -14,10 +14,6 @@ Metrics/BlockLength:
     - 'lazy_record.gemspec'
     - 'spec/**/*'
 
-Security/Eval:
-  Exclude:
-    - 'spec/spec_helper.rb'
-
 Style/PercentLiteralDelimiters:
   PreferredDelimiters:
     '%i': '[]'
