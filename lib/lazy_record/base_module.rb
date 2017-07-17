@@ -38,10 +38,6 @@ module LazyRecord
              displayable_attributes.join(', '))
     end
 
-    def to_s
-      inspect
-    end
-
     def associations
       []
     end

@@ -17,7 +17,7 @@ module LazyRecord
     #   end
     #
     #   thing = Thing.new # => #<Thing>
-    #   thing.say_hi      # => "Hi from #<Thing>"
+    #   thing.say_hi      # => "Hi from #<Thing:0x007fb9629c6260>"
     #
     # @api public
     #

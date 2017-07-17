@@ -165,7 +165,7 @@ Whatever.low_sleepy
 Whatever.where party_value: 12
 # => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>
 ```
-You can also use hash syntax and block syntax with `.where`. Block syntax will yield each object in the collection to the block for evaluation.
+You can use hash syntax and block syntax with `.where`. Block syntax acts like `Enumerable#select` and will yield each object in the collection to the block for evaluation.
 ```ruby
 Whatever.where { |w| w.sleepy_value > 5 }
 # => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>, #<Whatever id: 3, party_value: 4, sleepy_value: 11>]>
@@ -182,7 +182,9 @@ num = 6
 Whatever.where party_value: -> { num * 2 }
 # => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>]>
 ```
-Use `lr_method` for an alternative API for defining short instance methods using lambda syntax. The first argument passed to the block must be the receiver of the method, or `self` in the method scope.
+Use `lr_method` for an alternative API for defining short instance methods using lambda syntax.
+
+`lr_method` and `lr_scope` work identically except the former is for instance methods and evaluates `self` in the instance scope, while the latter defines class methods and `self` is evaluated in the class scope.
 
 ```ruby
 class Whatever < LazyRecord::Base
@@ -195,8 +197,8 @@ class Thing < LazyRecord::Base
   attr_accessor :stuff, :junk
   lr_validates :stuff, presence: true
   lr_has_many :whatevers
-  lr_method :speak, -> (_x, string) { puts string }
-  lr_method :what_am_i, ->(x) { "I'm a #{x.class}" }
+  lr_method :speak, -> (string) { puts string }
+  lr_method :what_am_i, -> { "I'm a #{self.class}" }
 end
 
 thing = Thing.new stuff: 'stuff'
