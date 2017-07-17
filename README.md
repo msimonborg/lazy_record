@@ -211,6 +211,8 @@ thing.what_am_i
 ## Platform support
 
 Tested against:
+* MRI 2.1.0
+* MRI 2.2.2
 * MRI 2.3.0
 * MRI 2.3.4
 * MRI 2.4.1
