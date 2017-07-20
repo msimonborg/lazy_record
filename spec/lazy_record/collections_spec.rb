@@ -5,7 +5,11 @@ describe 'Collections' do
     Parent.class_eval do
       lr_has_many :children
       lr_has_many :brothers, class_name: 'Sibling'
+      lr_accepts_nested_attributes_for :children, :brothers
     end
+
+    Child.class_eval { attr_accessor :age }
+    Sibling.class_eval { attr_accessor :name }
 
     it 'has many children' do
       expect(Parent.new).to respond_to(:children)
@@ -71,6 +75,18 @@ describe 'Collections' do
       add_non_sibling = -> { Parent.new { |p| p.brothers = Object.new } }
       expect(&add_non_siblings).to raise_error(ArgumentError, 'Argument must be a collection of siblings')
       expect(&add_non_sibling).to raise_error(NoMethodError)
+    end
+
+    it 'accepts nested attributes' do
+      parent = Parent.new
+
+      parent.children_attributes = { 0 => { age: 11 }, 1 => { age: 12 } }
+      parent.brothers_attributes = { 0 => { name: 'Sue' }, 1 => { name: 'Bob' } }
+
+      expect(parent.children_count).to eq 2
+      expect(parent.brothers_count).to eq 2
+      expect(parent.children.map(&:age)).to eq [11, 12]
+      expect(parent.brothers.map(&:name)).to eq %w[Sue Bob]
     end
   end
 end
