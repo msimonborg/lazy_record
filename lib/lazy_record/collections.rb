@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
+require 'lazy_record/nesting'
+
 module LazyRecord
   # Set up in-memory one-to-many relationships between objects
   module Collections
+    include LazyRecord::Nesting
+
     COLLECTION_MODULE_NAME   = :Collections
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
     def _define_collection_getter(collection, options)
-      klass = const_get(options[:class_name])
+      klass = lazily_get_class(options[:class_name]).call
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}
           @#{collection} ||= Relation.new(klass: #{klass})
@@ -16,7 +20,7 @@ module LazyRecord
     end
 
     def _define_collection_setter(collection, options)
-      klass = const_get(options[:class_name])
+      klass = lazily_get_class(options[:class_name]).call
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}=(coll)
           @#{collection} = Relation.new(klass: #{klass}, collection: coll)
@@ -76,7 +80,7 @@ module LazyRecord
     end
 
     def define_collection_attributes_setter(collection, options)
-      class_name = const_get(options.fetch(:class_name))
+      class_name = lazily_get_class(options.fetch(:class_name)).call
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}_attributes=(collection_attributes)
           collection_attributes.values.each do |attributes|

@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
+require 'lazy_record/nesting'
+
 module LazyRecord
   # Set up in-memory one-to-one associations between POROs.
   module Associations
+    include LazyRecord::Nesting
+
     ASSOCIATION_MODULE_NAME = :Associations
 
     def lr_has_one(*args)
@@ -36,7 +40,7 @@ module LazyRecord
     end
 
     def define_association_setter(assoc)
-      klass = const_get(assoc.to_s.camelize)
+      klass = lazily_get_class(assoc.to_s.camelize).call
       define_method("#{assoc}=") do |val|
         return instance_variable_set("@#{assoc}", val) if val.is_a? klass
         raise ArgumentError, "Argument must be a #{klass}"
