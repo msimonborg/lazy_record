@@ -1,11 +1,18 @@
 # frozen_string_literal: true
 
 describe 'Collections' do
-  it_can_include_and_inherit 'Parent', 'Child' do
-    Parent.class_eval { lr_has_many :children }
+  it_can_include_and_inherit 'Parent', 'Child', 'Sibling' do
+    Parent.class_eval do
+      lr_has_many :children
+      lr_has_many :brothers, class_name: 'Sibling'
+    end
 
     it 'has many children' do
       expect(Parent.new).to respond_to(:children)
+    end
+
+    it 'has many brothers' do
+      expect(Parent.new).to respond_to(:brothers)
     end
 
     it '#children returns a ChildRelation' do
@@ -13,8 +20,17 @@ describe 'Collections' do
       expect(Parent.new.children.inspect).to include('ChildRelation')
     end
 
-    it 'the Relation is bound to the Child class' do
+    it '#brothers returns a SiblingRelation' do
+      expect(Parent.new.brothers).to be_a(LazyRecord::Relation)
+      expect(Parent.new.brothers.inspect).to include('SiblingRelation')
+    end
+
+    it 'the ChildRelation is bound to the Child class' do
       expect(Parent.new.children.klass).to eq(Child)
+    end
+
+    it 'the SiblingRelation is bound to the Sibling class' do
+      expect(Parent.new.brothers.klass).to eq(Sibling)
     end
 
     it 'can set #children as a collection of children' do
@@ -35,6 +51,26 @@ describe 'Collections' do
       add_non_child = -> { Parent.new { |p| p.children = Object.new } }
       expect(&add_non_children).to raise_error(ArgumentError, 'Argument must be a collection of children')
       expect(&add_non_child).to raise_error(NoMethodError)
+    end
+
+    it 'can set #brothers as a collection of siblings' do
+      brothers = []
+      10.times { brothers << Sibling.new }
+
+      par1 = Parent.new { |p1| p1.brothers = brothers }
+
+      expect(par1.brothers).to be_a(LazyRecord::Relation)
+      expect(par1.brothers.count).to eq(10)
+      expect(par1.brothers.first).to be_a(Sibling)
+    end
+
+    it 'cannot set #brothers as anything else but a collection of siblings' do
+      non_siblings = []
+      10.times { non_siblings << Object.new }
+      add_non_siblings = -> { Parent.new { |p| p.brothers = non_siblings } }
+      add_non_sibling = -> { Parent.new { |p| p.brothers = Object.new } }
+      expect(&add_non_siblings).to raise_error(ArgumentError, 'Argument must be a collection of siblings')
+      expect(&add_non_sibling).to raise_error(NoMethodError)
     end
   end
 end
