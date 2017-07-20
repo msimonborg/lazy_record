@@ -40,7 +40,7 @@ module LazyRecord
     end
 
     def define_association_setter(assoc)
-      klass = lazily_get_class(assoc.to_s.camelize).call
+      klass = lazy_const_get_one_level_back(assoc.to_s.camelize).call
       define_method("#{assoc}=") do |val|
         return instance_variable_set("@#{assoc}", val) if val.is_a? klass
         raise ArgumentError, "Argument must be a #{klass}"

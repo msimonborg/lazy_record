@@ -11,7 +11,7 @@ module LazyRecord
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
     def _define_collection_getter(collection, options)
-      klass = lazily_get_class(options[:class_name]).call
+      klass = lazy_const_get_one_level_back(options[:class_name]).call
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}
           @#{collection} ||= Relation.new(klass: #{klass})
@@ -20,7 +20,7 @@ module LazyRecord
     end
 
     def _define_collection_setter(collection, options)
-      klass = lazily_get_class(options[:class_name]).call
+      klass = lazy_const_get_one_level_back(options[:class_name]).call
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}=(coll)
           @#{collection} = Relation.new(klass: #{klass}, collection: coll)
@@ -80,7 +80,9 @@ module LazyRecord
     end
 
     def define_collection_attributes_setter(collection, options)
-      class_name = lazily_get_class(options.fetch(:class_name)).call
+      class_name = lazy_const_get_one_level_back(
+        options.fetch(:class_name)
+      ).call
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}_attributes=(collection_attributes)
           collection_attributes.values.each do |attributes|
