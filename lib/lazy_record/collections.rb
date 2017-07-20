@@ -6,9 +6,8 @@ module LazyRecord
     COLLECTION_MODULE_NAME   = :Collections
     NESTED_ATTRS_MODULE_NAME = :NestedAttributes
 
-    def _define_collection_getter(collection)
-      klass = collection[:class_name].constantize
-      collection = collection[:attribute]
+    def _define_collection_getter(collection, options)
+      klass = const_get(options[:class_name])
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}
           @#{collection} ||= Relation.new(klass: #{klass})
@@ -16,9 +15,8 @@ module LazyRecord
       RUBY
     end
 
-    def _define_collection_setter(collection)
-      klass = const_get(collection[:class_name])
-      collection = collection[:attribute]
+    def _define_collection_setter(collection, options)
+      klass = const_get(options[:class_name])
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}=(coll)
           @#{collection} = Relation.new(klass: #{klass}, collection: coll)
@@ -27,7 +25,6 @@ module LazyRecord
     end
 
     def _define_collection_counter(collection)
-      collection = collection[:attribute]
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}_count
           #{collection}.count
@@ -39,20 +36,17 @@ module LazyRecord
       options = collections.extract_options!
       collections.each do |collection|
         class_name = options[:class_name] || collection.to_s.classify
-        _collections << {
-          attribute: collection.to_sym, class_name: class_name
-        }
+        _collections[collection.to_sym] = { class_name: class_name }
       end
     end
 
     def _collections
-      @_collections ||= []
+      @_collections ||= {}
     end
 
     def _define_collection_counts_to_s
       define_method(:collection_counts_to_s) do
-        collections.map do |collection|
-          collection = collection[:attribute]
+        collections.map do |collection, _options|
           "#{collection}_count: #{stringify_value(send("#{collection}_count"))}"
         end
       end
@@ -74,14 +68,15 @@ module LazyRecord
       _add_to_collections(*collections)
       _define_collections
       _define_collection_counts_to_s
-      _collections.each do |collection|
-        _define_collection_getter(collection)
-        _define_collection_setter(collection)
+      _collections.each do |collection, options|
+        _define_collection_getter(collection, options)
+        _define_collection_setter(collection, options)
         _define_collection_counter(collection)
       end
     end
 
-    def define_collection_attributes_setter(collection, class_name)
+    def define_collection_attributes_setter(collection, options)
+      class_name = const_get(options.fetch(:class_name))
       module_eval <<-RUBY, __FILE__, __LINE__ + 1
         def #{collection}_attributes=(collection_attributes)
           collection_attributes.values.each do |attributes|
@@ -96,11 +91,8 @@ module LazyRecord
       mod.extend(Collections)
       mod.module_eval do
         collections.each do |collection|
-          collection_object = _collections.find do |coll|
-            coll[:attribute] == collection
-          end
-          class_name = collection_object[:class_name].constantize
-          define_collection_attributes_setter(collection, class_name)
+          options = _collections[collection]
+          define_collection_attributes_setter(collection, options)
         end
       end
     end
