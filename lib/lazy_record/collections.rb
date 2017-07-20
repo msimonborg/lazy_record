@@ -92,9 +92,18 @@ module LazyRecord
       mod.module_eval do
         collections.each do |collection|
           options = _collections[collection]
+          _no_collection_error(collection) unless options
           define_collection_attributes_setter(collection, options)
         end
       end
+    end
+
+    def _no_collection_error(collection)
+      klass = collection.to_s.classify
+      klass = _collections.find { |_col, opt| opt[:class_name] == klass }.first
+      suggestion = klass ? ". Did you mean #{klass}?" : ''
+      msg = "#{self} doesn't have a collection of #{collection}#{suggestion}"
+      raise ArgumentError, msg, caller
     end
   end
 end

@@ -88,5 +88,11 @@ describe 'Collections' do
       expect(parent.children.map(&:age)).to eq [11, 12]
       expect(parent.brothers.map(&:name)).to eq %w[Sue Bob]
     end
+
+    it 'does not allow accepting nested attributes unless it has the collection' do
+      block = -> { Parent.class_eval { lr_accepts_nested_attributes_for :siblings } }
+
+      expect(&block).to raise_error(ArgumentError, "Parent::Collections doesn't have a collection of siblings. Did you mean brothers?")
+    end
   end
 end

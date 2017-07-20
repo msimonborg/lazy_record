@@ -3,9 +3,10 @@
 # Example class
 class Person < LazyRecord::Base
   attr_accessor :name, :age, :haircut
-  lr_has_many :dogs, :cats
+  lr_has_many :dogs
+  lr_has_many :kitties, class_name: 'Cat'
   lr_has_one :friend
-  lr_accepts_nested_attributes_for :dogs, :cats
+  lr_accepts_nested_attributes_for :dogs, :kitties
 
   lr_scope :new_with_dog, lambda { |opts = {}|
     dog = opts.fetch(:dog) { {} }
