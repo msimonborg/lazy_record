@@ -26,7 +26,7 @@ describe LazyRecord::Nesting do
     end
 
     it 'can find Five' do
-      expect(One::Two::Three.lazy_const_get('Five').call). to be One::Two::Five
+      expect(One::Two::Three.lazy_const_get('Five').call). to be Five
     end
 
     it 'can find NextToTwo' do
