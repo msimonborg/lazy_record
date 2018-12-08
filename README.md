@@ -182,9 +182,9 @@ num = 6
 Whatever.where party_value: -> { num * 2 }
 # => #<WhateverRelation [#<Whatever party_value: 12, sleepy_value: 12>]>
 ```
-Use `lr_method` for an alternative API for defining short instance methods using lambda syntax.
+Use `lazy_method` for an alternative API for defining short instance methods using lambda syntax.
 
-`lr_method` and `lr_scope` work identically except the former is for instance methods and evaluates `self` in the instance scope, while the latter defines class methods and `self` is evaluated in the class scope.
+`lazy_method` and `lr_scope` work identically except the former is for instance methods and evaluates `self` in the instance scope, while the latter defines class methods and `self` is evaluated in the class scope.
 
 ```ruby
 class Whatever < LazyRecord::Base
@@ -197,8 +197,8 @@ class Thing < LazyRecord::Base
   attr_accessor :stuff, :junk
   lr_validates :stuff, presence: true
   lr_has_many :whatevers
-  lr_method :speak, -> (string) { puts string }
-  lr_method :what_am_i, -> { "I'm a #{self.class}" }
+  lazy_method :speak, -> (string) { puts string }
+  lazy_method :what_am_i, -> { "I'm a #{self.class}" }
 end
 
 thing = Thing.new stuff: 'stuff'
