@@ -119,9 +119,14 @@ module IncludeAndInherit
     it_inherits_directly_from_lazy_record_base(*classes, &block)
   end
 
+  def remove_const_if_const_defined(const)
+    Object.send(:remove_const, const) if Object.const_defined?(const)
+  end
+
   def it_includes_lazy_record_base_module(*classes, &block)
     context 'included in custom Base class' do
       classes.each do |klass|
+        remove_const_if_const_defined(klass)
         cls = Object.const_set(klass, Class.new)
         cls.include(LazyRecord::BaseModule)
       end
@@ -132,6 +137,7 @@ module IncludeAndInherit
   def it_inherits_directly_from_lazy_record_base(*classes, &block)
     context 'inherited directly from LazyRecord::Base' do
       classes.each do |klass|
+        remove_const_if_const_defined(klass)
         Object.const_set(klass, Class.new(LazyRecord::Base))
       end
       module_eval(&block)
