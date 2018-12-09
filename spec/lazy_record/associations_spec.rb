@@ -3,7 +3,7 @@
 describe LazyRecord::Associations do
   it_can_include_and_inherit 'AssociationsSpec', 'Association' do
     AssociationsSpec.class_eval do
-      lr_has_one :association
+      lazy_has_one :association
     end
 
     let!(:one) { AssociationsSpec.new association: two }

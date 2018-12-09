@@ -9,7 +9,7 @@ module LazyRecord
 
     ASSOCIATION_MODULE_NAME = :Associations
 
-    def lr_has_one(*args)
+    def lazy_has_one(*args)
       include mod = get_or_set_mod(ASSOCIATION_MODULE_NAME)
       mod.extend(Associations) unless mod.const_defined?('Associations')
       mod.module_eval { add_has_one_methods(args) }
