@@ -68,14 +68,6 @@ module LazyRecord
       mod.module_eval { _add_collection_methods(*collections) }
     end
 
-    def lr_has_many(*collections) # Will be removed in version 1.0.0
-      puts 'Using `.lr_has_many` is deprecated. Use '\
-      '`lazy_has_many` instead. `.lr_has_many` will be removed in version 1.0.0'
-      lazy_has_many(*collections)
-    end
-
-    undef_method(:lr_has_many) if LazyRecord::VERSION >= '1.0.0'
-
     def _add_collection_methods(*collections)
       _add_to_collections(*collections)
       _define_collections
@@ -111,15 +103,6 @@ module LazyRecord
         end
       end
     end
-
-    def lr_accepts_nested_attributes_for(*collections) # Will be removed in version 1.0.0
-      puts 'Using `.lr_accepts_nested_attributes_for` is deprecated. Use '\
-      '`lazy_accepts_nested_attributes_for` instead. `.lr_accepts_nested_attributes_for` '\
-      'will be removed in version 1.0.0'
-      lazy_accepts_nested_attributes_for(*collections)
-    end
-
-    undef_method(:lr_accepts_nested_attributes_for) if LazyRecord::VERSION >= '1.0.0'
 
     def _no_collection_error(collection)
       klass = collection.to_s.classify

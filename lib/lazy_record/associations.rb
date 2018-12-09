@@ -15,14 +15,6 @@ module LazyRecord
       mod.module_eval { add_has_one_methods(args) }
     end
 
-    def lr_has_one(*args) # Will be removed in version 1.0.0
-      puts 'Using `.lr_has_one` is deprecated. Use '\
-      '`lazy_has_one` instead. `.lr_has_one` will be removed in version 1.0.0'
-      lazy_has_one(*args)
-    end
-
-    undef_method(:lr_has_one) if LazyRecord::VERSION >= '1.0.0'
-
     def add_has_one_methods(args)
       define_has_one_associations(*args)
       define_has_one_associations_to_s

@@ -36,6 +36,7 @@ require 'lazy_record/nesting'
 require 'lazy_record/scopes'
 require 'lazy_record/validations'
 require 'lazy_record/relation'
+require 'lazy_record/deprecations'
 require 'lazy_record/base_module'
 require 'lazy_record/base'
 

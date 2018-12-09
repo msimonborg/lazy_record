@@ -14,7 +14,8 @@ module LazyRecord
       Callbacks,
       Validations,
       Methods,
-      DynamicModules
+      DynamicModules,
+      Deprecations
     ].freeze
 
     # Extend these modules when BaseModule is included

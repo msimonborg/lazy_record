@@ -12,13 +12,5 @@ module LazyRecord
         define_method(method_name, &lambda)
       end
     end
-
-    def lr_scope(method_name, lambda) # Will be removed in version 1.0.0
-      puts 'Using `.lr_scope` is deprecated. Use '\
-      '`lazy_scope` instead. `.lr_scope` will be removed in version 1.0.0'
-      lazy_scope(method_name, lambda)
-    end
-
-    undef_method(:lr_scope) if LazyRecord::VERSION >= '1.0.0'
   end
 end
