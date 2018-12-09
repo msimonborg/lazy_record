@@ -18,7 +18,7 @@ module LazyRecord
       end
     end
 
-    def lr_validates(*args)
+    def lazy_validates(*args)
       include mod = get_or_set_mod(VALIDATIONS_MODULE_NAME)
       mod.extend(Validations)
       opts = args.extract_options!
@@ -28,5 +28,13 @@ module LazyRecord
         define_validation
       end
     end
+
+    def lr_validates(*args) # Will be removed in version 1.0.0
+      puts 'Using `.lr_validates` is deprecated. Use '\
+      '`lazy_validates` instead. `.lr_validates` will be removed in version 1.0.0'
+      lazy_validates(*args)
+    end
+
+    undef_method(:lr_validates) if LazyRecord::VERSION >= '1.0.0'
   end
 end

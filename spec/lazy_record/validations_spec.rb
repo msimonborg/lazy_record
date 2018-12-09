@@ -4,7 +4,7 @@ describe 'Validations' do
   it_can_include_and_inherit 'ValidationSpec1' do
     ValidationSpec1.class_eval do
       attr_accessor :name, :age
-      lr_validates :name, presence: true
+      lazy_validates :name, presence: true
     end
 
     before :each do

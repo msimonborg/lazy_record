@@ -34,5 +34,13 @@ module LazyRecord
 
       include mod unless include?(mod)
     end
+
+    def lr_method(method_name, method) # Will be removed in version 1.0.0
+      puts 'Using `.lr_method` is deprecated. Use '\
+      '`lazy_method` instead. `.lr_method` will be removed in version 1.0.0'
+      lazy_method(method_name, method)
+    end
+
+    undef_method(:lr_method) if LazyRecord::VERSION >= '1.0.0'
   end
 end

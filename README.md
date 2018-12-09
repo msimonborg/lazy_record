@@ -86,12 +86,12 @@ Earlier implementations used a custom `lr_attr_accessor` method, however this ha
 
 See @dbrady's `scoped_attr_accessor` gem for more info on the `scoped_attr_*` methods.
 
-Validate presence of attributes with `lr_validates` like you would with ActiveRecord. Failed validations will return false and the ID will not be incremented. More validation options coming in the future.
+Validate presence of attributes with `lazy_validates` like you would with ActiveRecord. Failed validations will return false and the ID will not be incremented. More validation options coming in the future.
 
 ```ruby
 class Thing < LazyRecord::Base
   attr_accessor :stuff, :junk
-  lr_validates :stuff, presence: true
+  lazy_validates :stuff, presence: true
 end
 
 thing = Thing.new junk: 'junk'
@@ -100,7 +100,7 @@ stuff must be given
 #<Thing stuff: nil, junk: "junk">
 # => false
 ```
-Use `lr_has_many` to set up associated collections of another class. `lr_belongs_to` will be added in a future update.
+Use `lazy_has_many` to set up associated collections of another class. `lazy_belongs_to` will be added in a future update.
 
 ```ruby
 class Whatever < LazyRecord::Base
@@ -108,8 +108,8 @@ end
 
 class Thing < LazyRecord::Base
   attr_accessor :stuff, :junk
-  lr_validates :stuff, presence: true
-  lr_has_many :whatevers
+  lazy_validates :stuff, presence: true
+  lazy_has_many :whatevers
 end
 
 whatever = Whatever.new
@@ -125,19 +125,19 @@ thing.whatevers
 # => #<WhateverRelation [#<Whatever>]>
 ```
 
-Use `lr_scope` and `#where` to create class scope methods and query objects.
+Use `lazy_scope` and `#where` to create class scope methods and query objects.
 
 ```ruby
 class Whatever < LazyRecord::Base
   attr_accessor :party_value, :sleepy_value
-  lr_scope :big_party, -> { where { |w| w.party_value > 10 } }
-  lr_scope :low_sleepy, -> { where { |w| w.sleepy_value < 10 } }
+  lazy_scope :big_party, -> { where { |w| w.party_value > 10 } }
+  lazy_scope :low_sleepy, -> { where { |w| w.sleepy_value < 10 } }
 end
 
 class Thing < LazyRecord::Base
-  lr_attr_accessor :stuff, :junk
-  lr_validates :stuff, presence: true
-  lr_has_many :whatevers
+  attr_accessor :stuff, :junk
+  lazy_validates :stuff, presence: true
+  lazy_has_many :whatevers
 end
 
 Whatever.new party_value: 12, sleepy_value: 12
@@ -184,19 +184,19 @@ Whatever.where party_value: -> { num * 2 }
 ```
 Use `lazy_method` for an alternative API for defining short instance methods using lambda syntax.
 
-`lazy_method` and `lr_scope` work identically except the former is for instance methods and evaluates `self` in the instance scope, while the latter defines class methods and `self` is evaluated in the class scope.
+`lazy_method` and `lazy_scope` work identically except the former is for instance methods and evaluates `self` in the instance scope, while the latter defines class methods and `self` is evaluated in the class scope.
 
 ```ruby
 class Whatever < LazyRecord::Base
   attr_accessor :party_value, :sleepy_value, :right
-  lr_scope :big_party, -> { where { |w| w.party_value > 10 } }
-  lr_scope :low_sleepy, -> { where { |w| w.sleepy_value < 10 } }
+  lazy_scope :big_party, -> { where { |w| w.party_value > 10 } }
+  lazy_scope :low_sleepy, -> { where { |w| w.sleepy_value < 10 } }
 end
 
 class Thing < LazyRecord::Base
   attr_accessor :stuff, :junk
-  lr_validates :stuff, presence: true
-  lr_has_many :whatevers
+  lazy_validates :stuff, presence: true
+  lazy_has_many :whatevers
   lazy_method :speak, -> (string) { puts string }
   lazy_method :what_am_i, -> { "I'm a #{self.class}" }
 end

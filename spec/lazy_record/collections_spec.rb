@@ -3,9 +3,9 @@
 describe 'Collections' do
   it_can_include_and_inherit 'Parent', 'Child', 'Sibling' do
     Parent.class_eval do
-      lr_has_many :children
-      lr_has_many :brothers, class_name: 'Sibling'
-      lr_accepts_nested_attributes_for :children, :brothers
+      lazy_has_many :children
+      lazy_has_many :brothers, class_name: 'Sibling'
+      lazy_accepts_nested_attributes_for :children, :brothers
     end
 
     Child.class_eval { attr_accessor :age }
@@ -90,7 +90,7 @@ describe 'Collections' do
     end
 
     it 'does not allow accepting nested attributes unless it has the collection' do
-      block = -> { Parent.class_eval { lr_accepts_nested_attributes_for :siblings } }
+      block = -> { Parent.class_eval { lazy_accepts_nested_attributes_for :siblings } }
 
       expect(&block).to raise_error(ArgumentError, "Parent::Collections doesn't have a collection of siblings. Did you mean brothers?")
     end

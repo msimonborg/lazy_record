@@ -4,10 +4,10 @@ describe LazyRecord::Scopes do
   it_can_include_and_inherit 'ScopesSpec' do
     ScopesSpec.class_eval do
       attr_accessor :attr_one, :attr_two
-      lr_scope :attr_one_eql_one, -> { where attr_one: 1 }
-      lr_scope :attr_two_eql_two, -> { where attr_two: 2 }
-      lr_scope :attr_one_eql, ->(val) { where attr_one: val }
-      lr_scope :attr_two_eql, ->(val) { where attr_two: val }
+      lazy_scope :attr_one_eql_one, -> { where attr_one: 1 }
+      lazy_scope :attr_two_eql_two, -> { where attr_two: 2 }
+      lazy_scope :attr_one_eql, ->(val) { where attr_one: val }
+      lazy_scope :attr_two_eql, ->(val) { where attr_two: val }
     end
 
     let!(:one) { ScopesSpec.new(attr_one: 1, attr_two: 1) }
