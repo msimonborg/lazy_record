@@ -8,20 +8,20 @@ class Person < LazyRecord::Base
   lazy_has_one :friend
   lazy_accepts_nested_attributes_for :dogs, :kitties
 
-  lr_scope :new_with_dog, lambda { |opts = {}|
+  lazy_scope :new_with_dog, lambda { |opts = {}|
     dog = opts.fetch(:dog) { {} }
     new(opts) { |p| p.adopt_a_dog(dog) }
   }
-  lr_scope :young, -> { where { |obj| obj.age < 30 } }
-  lr_scope :old, -> { where { |obj| obj.age > 30 } }
-  lr_scope :short_hair, -> { where(haircut: 'short') }
+  lazy_scope :young, -> { where { |obj| obj.age < 30 } }
+  lazy_scope :old, -> { where { |obj| obj.age > 30 } }
+  lazy_scope :short_hair, -> { where(haircut: 'short') }
 
   lazy_method :speak, ->(phrase) { "#{name}: '#{phrase}'" }
   lazy_method :add_dog, ->(name) { dogs << Dog.new(name: name) }
   lazy_method :introduction, -> { puts "Hello, my name is #{name}" }
   lazy_method :say_hi, -> { "Hi from #{self}" }
 
-  lr_validates :name, :age, presence: true
+  lazy_validates :name, :age, presence: true
 
   def self.make_people(*args)
     opts = args.extract_options!

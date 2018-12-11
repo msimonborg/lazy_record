@@ -3,7 +3,7 @@
 # Example class
 class Dog < LazyRecord::Base
   attr_accessor :name, :breed, :weight
-  lr_has_many :friends
+  lazy_has_many :friends
 
   def initialize(opts = {})
     super
